@@ -1,0 +1,230 @@
+#+TITLE: Data Structures and Algorithms using Java - Chapter 1
+
+* Overview and Java Review
+** Data Structures
+*** What is Data?
+- *data* is information
+- studies show that programs spend 80% of their execution time searching through memory to locate necessary data
+- *Data Structres* is the area of computer science that dresses the issues of data storage requirements of a program and the speed at which the program loactes the data it processes
+*** What is a Data Structure?
+- a *data structure* is an organization of information, usually in memory, for better algorithm efficiency
+- *overhead* is the extra storage above the size of the data set that an organization scheme requires
+- a good data structure is one that organizes the data in a way that facilitates the operations performed on the data
+  + it does this while keeping total storage requirements at, or close to, the size of the data set
+- there are two types of of data structures:
+  1. built-in data structures
+     - scemes for storing data that are part of a programming language
+       + examples include memory cell (variable) declarations, arrays, and Java's String class
+  2. programmer-defined data structures
+     - schemes for storing data that are conceived and implemented by the programmer of a particular program
+       + examples of these are parallel arrays, class definitions, hashing schemes, linked lists, trees, stacks, and queues
+
+** Selecting a Data Structure
+*** The Data Structure's Impact on PErformance
+
+
+*** Determining the PErformance of a Data Structure
+- evaluation takes place during the early design stages, before any code is written
+- two sets of calculations are performed on each candidate data structure to measure its performance:
+  1. calculations to determine the speed of the operations to be performed on the data
+  2. calculations to determine the amount of overhead associated with the data structure
+- the best structure for a particular application is usually a compromise between speed, overhead, and cost
+*** The Trade-Off Process
+- the selection of the best data structure should always be based on:
+    "the least expenseive data structure that satisfies the speed requirements and storage constraints of the application"
+- when data processing is performed to update a display viewed by humans, an operation time of 0.1 is more than adequate
+  + studies show that faster response times are impercetible to humans
+- software engineering practices mandate that speed requirements be specified before tue program is designed
+  + they must be documented in the project's /Requirements Document/
+- cost of a data structure is primarily the labor cost of developing the code to implement it
+  + this includes its design, coding, testing, and documentation
+  + studies indicate that the cost of software is directly proportional to the number of lines of code that the software contains
+
+** Fundamental Concepts
+*** Terminology
+- *field* - an indivisible piece of data
+  + /indivisible/ means that if the data were divided any further, it would lose all meaning
+- *node* - a group of related fields
+- *key field* - a designated field in a node whose contents are used to identify, or refer to, the node
+- *homogeneous data set* - a set of nodes in which all the nodes have identical fields (number and type)
+  + most data sets are homogeneous
+*** Access Modes
+- /access/ is the process by which a node is located in memory
+  + once located, and /operation/ can be performed on the node
+- there are two generic ways or modes used to specify the node to be accessed:
+  1. the node number mode
+     - the number of the node is specified
+  2. the key field mode
+     - the contents of the designated key field are specified
+- most data structures utilize the key field access mode
+*** Linear Lists
+- a collection of /n/ nodes is a linear list if:
+  + there is a unique first node, N_1
+  + there is a unique last node, N_n
+  + for any other node, N_i, a unique node, N_i-1, comes before it and a unique node, N_i+1, comes after it
+*** Data Structure Operations
+- operations performed on data structures can be arranged in a hierarchy.
+- the most fundamental operation is /insert/
+  + /insert/ adds a node to the data structure
+  + this is the most fundamental operation because all data sets would be empty without it and os it must be available for all data sets
+- the next level of operation hierarchy includes /fetch/ and /delete/
+  + /fetch/ returns a node from the data set
+  + /delete/ elimates a node from the data set
+- the /update/ operation is a level above /fetch/ and /delete/
+  + it is considered higher because it can be implemented to /delete/ a node and then /insert/ a new one in its place
+  + all fields of a node must be supplied to a /node/ during an /update/ operation, even if only one is being updated
+*** Implementing a Programmer-Defined Data Structure
+- in OOP languages, data structures are implemented using the class construct
+  + the memory required for the data structure is specified as the class's data members and the operations are stored as methods
+- the best way to implement a data structure is to implement it as a /generic/ data stracture
+  + generic data structures are implemented in such a way that they can be used for multiple applications, regardless of node strtucture
+  + they reduce the cost of software development because, once coded for an application, they do not need to be recoded for subsequent applications
+- guidelines for the implementation of a data structure in a generic way:
+  + node definition and data structure are coded as separate classes
+  + node definition class (/interface/ class):
+    - always contains a data member for each field
+    - usually contains a toString method to facilitate the output of fields
+  + data structure class (/implementation/ class):
+    - allocates storage to maintain overhead
+    - allocates storage for the data set
+    - provides initialization methods
+    - provides methods to perform the required operations
+    - usually provides a method to display the contents of all nodes
+*** Procedural Abstractions and Abstract Data Types
+- in computer science, we encounter two abstractions:
+  1. procedural abstractions
+     - the implementation details of a method/procedure do not need to be known to use it
+  2. data abstractions
+     - the implementation details of a data structure do not need to be known to use it
+     - only the the operation methods and their signatures need to be known so they can be used
+- an *abstract data type* is a data structure that can be used with only this superficial level of understanding
+- *standard abstract data type* is a data structure whose operation method signatures conform to a consistent format
+  + this standardization provides the benefit that a programmer can change the data structure used in an existing application by changing one line: the line that declares the data structure object
+  + standardizing abstract data types reduces the cost of software
+*** Encapsulation
+- *encapsulation* is the idea that code is written in a way that establishes /compiler enforced protocols/ for accessing the data that a program processes
+- these protocols usually /restrict/ access to the data
+- in computer science, it is said that encapsulation limits the /scope/ of the program statements that can acecss a data item
+- *modularization* all methods dealing with encapsulated code are contained with in the same class
+
+** Calculating Speed (Time Complexity)
+- *wall time* is the considered speed of an algorithm in seconds
+- /complexity analysis/ is used to remove platform-dependent factors that provide variance in estimated wall time execution
+  + /time complexity/ is from a speed viewpoint
+    - expressed as a mathematical function T(n), where /n/ is usually the number of pieces of data the algorithm processes
+  + /space complexity/ is from a storage viewpoint
+- /Big-O Analysis/ can be used to greatly simplify complexity analysis
+*** Big-O Analysis (O Standing for _O_rder of Magnitude)
+- used to set a boind on the upper limit of a mathematical function
+  + based on the assumption that one of the terms of the function will /dominate/, or contribute, all but a negligible portion of the fuction's value
+- provides the following guideline:
+    to approximate the value of a function of /n/, as /n/ gets large, it is sufficient to identify its dominant term and evaluate it for adequately large values of /n/
+- used to evaluate functional relationships in all fields of engineering
+  + however, in software engineering, its use to evaluate the speed of an algorithm is simpler than its use in other engineering disciplines because of the limited number of functions that result from the analysis of algorithm complexity
+- two other analysis techniques used to determine the /approximate/ value of a mathematical function:
+  + Big-Omega
+    - used to determine the lower bound
+  + Big-Theta
+    - used to analyze functions whose upper and lower bounds are of the same order of magnitude
+*** Algorithm Speed
+- two factors to consider when discussing algorithm speed:
+  1. the /relative/ speed of the algorithm to other algorithms
+     - used to determine whether an algorithm (or code segment) is faster or slower than other algorithms
+  2. the /absolute/ speed of the algorithm
+     - used to determine the actual execution time, in seconds, of the algorithm
+- both speeds can be simplified using Big-O analysis, though its approximation may invalidate its use for calculating absolute speed for some time-critical applications
+*** Relative Speed of Algorithms
+- relative speed is determined by analyzing each algorithm's pseudocode to determing their speed function's dominant term.
+  + the fastest algorithm is the one whose dominant term occupies the highest position in the following table; the slowest has a dominant term in the lowest position
+*Relative Dominance of Common Algorithm Complexity Terms*
+| Dominant Term                                            | Name of Dominant Term | Relative Magnitude of the Dominant Term |
+|----------------------------------------------------------+-----------------------+-----------------------------------------|
+| /c/, a constant                                          | Constant              | Relative Magnitude of the Dominant Term |
+| log_2(/n/)                                               | Logarithmic           |                                       2 |
+| /n/                                                      | Linear                |                                       3 |
+| /n/log_2(/n/)                                            | Linear logarithmic    |                                       4 |
+| Powers of /n/: /n/^2 < /n/^3 < ... < /n/^/i/ (/i/ < /n/) | Polynomial            |                                       5 |
+| /c/^/n/                                                  | Exponential           |                                       6 |
+| /n/!                                                     | Factorial             |                             7 (largest) |
+
+**** Relative Speed Case Study: The Binary Search Algorithm
+- the binary search algorithm is a technique for finding a data item stored in an array
+  + given the data item, called the /search value/ the algorith returns the item's array index value
+  + the algorithm /assumes/ the array is sorted (this case study assumes ascending order)
+- the algorithm idententifies a portion of the array that includes the serach value as a /sub-array/
+  + initially, the entire array is the sub-array   
+*** Absolute Speed of an Algorithm
+- the fastest algorithm identified by Big-O analysis might not always be fast enough for an application
+- the most reliable way to determine the absoute speed of an algorithm is code it and test it on a representative number of preocesses
+  + this is often to time consuming and costly to implement during the design process
+- assuming the CPU is dedicated to the execution of the algorithm, execution time, /t/, can be expressed as:
+            /t/ = /t/_/m/1 + /t/_/m/2 + ... + /t/_/m//n/
+  + where /n/ is the total number of machine language instructions in the translation of the algorithm
+        and
+  + /t/_/m//i/ is the time required to execute the /i/th machine language instruction
+  + this equation can be simplified down to:
+            g
+            \Sigma (/t/_/i/ * /n/_/i/)
+            /i/=1
+    - /g/ is the number of instruction groupings
+    - /t/_/i/ is the time required to execute an instruction in the /i/th grouping
+        and
+    - /n/_/i/ is the number of instructions in group /i/
+- in the simplest case, instructions are assumed to be in one of two groups (/g/ = 2)
+  1. those that access memory
+  2. those that do not access memory
+- distinguishing between instructions that do and do not access memory is import because accessing memory is significantly slower than those that do not
+  + instructions that do not access memory are called /nonaccess/ instructions
+  + speed of memory is orders of magnitude slower than CPU logic operation performance time
+
+*** Data Structure Speed
+- speed of an algorithm's operations is not the only factor; /frequency/ of each operation is also important
+- the frequency-weighted average time is defined as:
+        /t/_avg = (/t/_1 * /f/_1 + /t/_2 * /f/_2 + /t/_3 * /f/_3 + ... /t/_n * /f/_/n/)/(/f/_1 + /f/_2 + /f/_3 + ... + /f/_/n/)
+  + /t/_/i/ is the speed of the /i/th operation (/i/ = 1, 2, 3, ..., /n/)
+  + /n/ is the number of different operations available on the structure
+        and
+  + /f/_/i/ is the frequency of the /i/th operation (/i/ = 1, 2, 3, ..., /n/)
+- the equation for /t/_avg can be expressed in a simpler form where the denominator is divided into each term of the numberator:
+        /t/_avg = (/t/_1 * \rho_1 + /t/_2 * \rho_2 + /t/_3 + \rho_3 + ... + /t/_/n/ * \rho_/n/)
+  + \rho_/i/ is the probability of the /i/th operation and is equal to /f/_/i/ / (/f/_1 + /f/_2 + /f/_3 + ... /f/_/n/)
+
+** Calculating Memory Overhead (Space Complexity)\
+- data structures that minimize overhead are said to be more /memory efficient/
+- the parameter/metric used to specific how efficiently a data structure uses memory is /density/
+- /Density/, /D/, is defined as:
+        D = (information bytes)/(total bytes) = (information bytes)/(information bytes + overhead bytes)
+  + /information bytes/ is the amount of memory required to store the information stored in teh structure, in bytes
+  + /total bytes/ is the total amount of memory allocated to the structure, in bytes
+    and
+  + /overhead bytes/ is the amount of memory required to maintain the structure, in bytes
+- the range of /D/ is 0 < /D/ < 1
+  + memory efficient structures have a density close to 1
+- some data structures require a set/constant amount of overhead, /O/, independent of the number of nodes
+  + the density for these structures increases as the number of nodes in the data structure increases:
+        /D/ = /w/ * /n/ / (/w/ * /n/ + /O/) = 1 / (1 + /O/ / (/w/ * /n/))
+    - /w/ is the node width and is constant for a particular data structure
+    - /n/ is the number nodes in the data structre
+
+** Java Review
+*** Arrays of Primitive Variables
+- /primitive variables/ are single instances of integral or real types of information
+- /duplicate definition/ compile error happens when a reference variable is declared more than once
+*** Definition of a Class
+- a *class* is a programmer-defined type that ocnsists of data definitions and methods (subprograms) that operate on that data
+- the name of the class is the name of the newly defined data type
+- each class and method will have an /access modifier/ that determines whether or not other parts of the program can interact with it
+- an instance of a class is called an /object/
+- there are two penmanship issues to follow when coding classes:
+  1. names of classes should always beging with an uppercase letter
+  2. names of data members and methods should be in Pascal Case
+- parameter names used in method headings should not be the same as the names of data members
+*** Declaration of an Object
+- the sequence of code that declares the object is referred to as /client code/
+*** Declaration of an Array of Ojects
+- an array of objects is declared using a three-step process:
+  1. declare a reference variable to store the location of the first element of the array
+  2. declare an array of /n/ reference variables to store the address of the /n/ objects
+  3. declare the /n/ objects, setting their locations into the array of reference variables
+*** Objects that Contain Objects as Data Members
+- objects can contain other objects as their parameters
