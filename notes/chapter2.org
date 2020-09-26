@@ -1,0 +1,51 @@
+#+TITLE: Array-Based Structures
+
+* The Built-in Structure Array
+- early programming languages were designed to evaluate mathematical formulas
+  + /arrays/ were provided as a built-in data structure for storing subscripted variables
+- it was anticipated that arrays would be widely used, so it was implemented with high speed and low memory
+  + from a data structures viewpoint, these are usually mutually exclusive
+  + to overcome this, restrictions had to be placed on the data structure
+- arrays have the following restrictions:
+  1. /homogeneous structure/ - every value must be of the same type
+  2. /node number access/ - each value is accessed with it's ordinal position
+  3. /set size/ - Insert and Delete operations are not supported
+  4. /restricted storage/ - storage of array node members is restricted to contiguous memory
+  5. /sequentual storage/ - array node members are stored sequentially based on their node number
+- Storing arrays this way permits rapid access to the nodes since the byte address of a node can be expressed as a simple mathematical function:
+        /N/ = /A/_/N/ = /A/_o + /N/ * /w/
+  + The function is called the /linear list access function/ and can be rapidly evaluated by the CPU since it involves only two arithmetic operations
+- the relationship between mathematical subscript and an array node number is /N/ = /i/
+** Multidimensional Arrays
+- Most programming languages include the ability to store multisubscripted variables
+  + they are assigned node numbers in one of two ways:
+    1. /row major/ order: /N/ = /i/ * (/j_max/ + 1) + /j/
+    2. /column major/ order: /N/ = /j/ * (/i_max/ + 1) + /i/
+- Since arrays are built-in structures in modern languages, they are treated as an abstract data type
+  + this means that programmers do not need to know the array mapping functions
+    - the exception is programmers that write compilers
+
+* Programmer-Defined Array Structures
+- the speed and low overhead of arrays make them an attractive /foundation/ for higher level structures to build upon
+** Unsorted Array
+- the idea of reclaiming storage associated with a deleted node is called /garbage collection/
+** Sorted Array
+
+* Implementation of the Unsorted-Optimized Array Structure
+
+* Expandable Array-Based Structures
+- There are many applications where the number of nodes in the structure cannot be anticipated (with any certainty) at the time the data structure is created
+  + there is an alternate implementation of the /insert/ method for these applications
+- Essentially, a new, larger array is made and the contents of the old array are copied into it
+  + in some programming languages, this can be a time consuming process
+
+* Generic Data Structures
+- generic data structures save both time and money by being usable with multiple data types and multiple applications
+** Design Considerations
+1. separate the node definition and the data structure's definition into two separate classes
+2. the data structure's code must not mention the names of the data fields that make up a node
+3. if the structure is going to be encapsulated, a method to pertorm the deep copy must be part of the node definition class
+4. if the structure is to be accessed in the key field mode, a method to determine if a given key is equal to the key of a node must be provided in the node definition class
+5. the data structure's code cannot mention the name of the node class
+6. the data structure's code cannot mention the type ot the key
+** Generic Implementation of the Unsorted-Optimized Array
