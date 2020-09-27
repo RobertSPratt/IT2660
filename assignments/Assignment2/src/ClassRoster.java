@@ -68,8 +68,8 @@ public class ClassRoster {
         }
 
         //recreates array without entry
+        int j = 0;
         for(int i = 0; i < newRoster.length; i++) {
-            int j = 0;
 
             if(t != i) {
                 newRoster[i] = roster[j];
@@ -78,7 +78,9 @@ public class ClassRoster {
             }
 
             else {
+                newRoster[j] = roster[i + 1];
                 j++;
+                i++;
             }
         }
 
