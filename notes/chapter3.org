@@ -1,0 +1,50 @@
+#+Title: Chapter 3 - Restricted Structures
+
+* Restricterd Structures
+- restricted applications are not appropriate for all applications
+  + by design, they target a small subset of applications that share a common "pattern" of operations
+- they receive their name because they place severe restrictions on the way the application program accesses its data set
+  + both the operations performed and the mode in which those operations are performed (node number or key field) are restricted
+- the restrictions placed on the operations performed on the data set are:
+  + the update() operation is not supported
+  + the fetch() and delete() operations are combined into one operation
+  + the insert() operation is supported
+  + the combination of the fetch() and delete() functions implies that whenever a node is fetched, it is automatically removed
+    - restricted structures are aimed at applications that recall a node once, and only once
+  + since the update() operation is not supported, applications targeted by restricted structures are those whose nodes never change their contents
+- the restrictions placed on /access/ modes are even more severe than those above and are listed above:
+  + the key field access is not supported
+  + the node number access is supported, but is severly restricted
+    - node number has no meaning
+  + because the nod number has no meaning, the client code does not specify the node number of the node inserted nor the node number to be fetched (and deleted)
+    - instead, the client code specifies that the insert() operation, or the fetch()/delete() operation, be "performed"
+      + then, depending on the structure, the fetch()/delete() operation operates on the node that has been in the structure eithe the shortest or the longest amount of time
+- the two most widely used restricted structures are Queue and Stack
+  + for Queue, when a fetch()/delete() operation is performed, the node that has been in the structure the longest is fetched and deleted
+  + for Stack, when a fetch()/delete() operation is performed, the node that has been in the structure the shortest amount of time is fetched and deleted
+- there is a third structure, Deque, that is not used as widely as Queues and Stacks
+  + Deques combine the functionality of a Stack and a Queue into one structure
+* Stack
+- Stack obtains its name from the analogy that the nodes are stacked one on top of the other in the structure just as coins are stacked
+  + a new coin is always placed on, or removed from, the top of the stack
+** Stack Operations, Terminology, and Error Conditions
+- the insert() operation on a Stack structure is called the /push()/ operation
+- the fetch()/delete() operation is called the /pop()/ operation
+- when there are no nodes in the Stack, it is said to be empty
+  + if it has reached its maximum node capacity, it is said to be full
+** Classical Model of a Stack
+- in the classical model of a Stack, the push() and pop() operations are the only ones allowed on the structure
+  + the maximum number of nodes is declared when the structure is created
+- the classical model is often expanded to include other operations and features:
+  + the ability to rinitialize the stack to empty
+  + the ability to test for an empty stack (overflow condition)
+  + the ability to test for a full stack (overflow condition)
+  + the ability to pop a node from the stack without deleting it from the structure
+    - commonly referred to as the /peek()/ operation
+  + the ability to store an "unlimited" number of nodes on the stack
+*** Operation Algorithms
+- in addition to the array data used to store the locations of the nodes pushed onto the stack, the algorithms for its two operations require that each Stack object contains two other integer data members:
+  1. size - used to store the maximum number of nodes the stack can hold
+  2. top - used to store the index into the array, data, where the last push() operation was performed
+*** Performance of the Structure
+- the performance of a Data Structure is dependent on the speed of its operations and the additional memory (above that necessary to store its nodes) required by the structure
