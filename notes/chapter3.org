@@ -48,3 +48,40 @@
   2. top - used to store the index into the array, data, where the last push() operation was performed
 *** Performance of the Structure
 - the performance of a Data Structure is dependent on the speed of its operations and the additional memory (above that necessary to store its nodes) required by the structure
+* Queue
+** Queue Operations, Terminology, and Error Conditions
+- nodes are inserted /into/ and removed /from/ a queue.
+- nodes are stored in chronological order, just as with all restricted structures
+- the node that has been in the structure the longest amount of time is in the /front/ of the queue
+  + the node that has been in the structure the least amount of time is said to be at the /rear/ of the queue
+- the insert opertation is called an /enqueue()/ operation
+- the fetch/delete operation is called the /dequeue()/ operation
+- when there are no nodes in the queue, it is said to be empty
+  + when the queue has reached its capacity, it is said to be full
+- nodes in a Stack are always shown in a /vertical/ arrangement, while nodes in a Queue are represented in a /horizontal/ arrangement
+** Classical Model of a Queue
+- in the classical model of a Queue, only the enqueue() and dequeue() operations are the only operations allowed
+  + the maximum number of nodes to be stored in the structure needs to be declared when the structure is created
+- the classical model is often expanded to include other operations and features:
+  + the ability to reinitialize the queue to empty
+  + the ability to test for an empty queue (underflow condition)
+  + the ability to test for a full queue (overfopw condition)
+  + the ability to fetch a node from the queue without deleting it from the structure
+  + expand the queue at run-time within the limits of system memory
+* Generic Implementation of the Classic Stack, a Methodized Approach
+** Generic Conversion Methodology
+- Step 1 - replace the class' type with a generic placeholder at the end of the heading
+- Step 2 - replace all references to the class with a generic type
+- Step 3 - wherever the keyword /new/ operates on the placeholder, the class /Object/ must be substituted for it
+- Step 4 - collect all method signatures into an interface, and implement the interface
+* Priority Queues
+- can be thought of as restricted data structures because they normally support only an insert() operation (named /add()/) and a fetch()/delete() operation (named /poll()/)
+- access to the nodes is restricted in that they are fetched and deleted in an order based on a priority assigned to each node
+  + normally the node with the lowest priority is returned from the poll() operation
+  + there are various strategies used to determine decide which node to return in the event of a tie
+    - normally, it is the node that has been in the structure the longest
+- priority queues can be implemented in a variety of ways, but the most efficient is to use a scheme called a /heap/
+* Java's Stack Class
+- the Java Application Programmer Interface provides a class named /Stack/
+  + it is implemented as a /generic/, /expandable/, but /unencapsulated/ data structure
+- it stores objects, not primitive types, and can be used as a compiler enforced /homogeneous/ or /heterogeneous/ structure
