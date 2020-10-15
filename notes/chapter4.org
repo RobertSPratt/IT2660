@@ -1,0 +1,23 @@
+#+TITLE: Chapter 4 - Linked Lists and Iterators
+
+* Noncontiguous Structures
+- reasons noncontiguous structures, like linked lists, include:
+  1. their ability to utilize fragmented memory
+  2. they utilize all of the memory assigned to them
+  3. they expand rapidly regardless of the implementation language
+* Linked Lists
+- there are several types of linked lists, but they all share two common characteristics:
+  1. every node in the structure has at least one field, called a /link/ field, that stores the location of another node (with the exception of the unique last node, if there is one)
+  2. each node's location is stored in at least one other node (with the exception of the unique first node, if there is one)
+- because nodes locations can be determined through other nodes, they no longer need to be stored in contiguous memory
+  + accessing linked lists through link fields tends to reduce the speed of these structures
+  + this is called /traversing/ the list
+* Singly Linked Lists
+- the simplest form of a linked list is the singly linked list; singly linked lists are ones in which
+  + each node has one link field
+  + the nodes form a linear list
+    - there is a unique first node, n_1
+    - there is a unique last node, n_j, and
+    - any other node, n_k, is proceeded by node n_k-1 and followed by node n_k+1
+** Basic Operation Algorithms
+-
