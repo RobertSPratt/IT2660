@@ -20,4 +20,5 @@
     - there is a unique last node, n_j, and
     - any other node, n_k, is proceeded by node n_k-1 and followed by node n_k+1
 ** Basic Operation Algorithms
+*** Insert Algorithm
 -
