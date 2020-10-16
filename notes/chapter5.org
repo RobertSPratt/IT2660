@@ -101,3 +101,12 @@
   + generally speaking, introducing randomness into the preprocessing algorithm tends to reduce the collision frequencies.
 - Pseudorandom Preprocessing algorithm
         /p//k/ = /p/_1 * /k/ + /p/_2
+  + /p//k/ is the pseudo key
+  + /k/ is the key
+  + /p/_1 and /p/_2 are prime numbers
+    - these are usually small and, once chosen, retain their values over the life of the data structure
+*** Digit Extraction Preprocessing
+- a technique used to reduce the length of mulitposition (or multi-digit) keys and to introduce randomness into the pseudo keys it generates
+- several key positions (/m/ of them) are retained to form the pseudo key
+  + all other key positions are ignored
+-
