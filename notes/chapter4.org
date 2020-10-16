@@ -19,6 +19,86 @@
     - there is a unique first node, n_1
     - there is a unique last node, n_j, and
     - any other node, n_k, is proceeded by node n_k-1 and followed by node n_k+1
-** Basic Operation Algorithms
-*** Insert Algorithm
--
+** A Stack Implemented as a Singly Linked List
+- a singly linked list is often used to implement a Stack, instead of an array
+  + this allows for a virtually unlimited number of Push operations
+- the singly linked list can be implemented as a Stack with a trick
+  + renames the input() method to a push() method
+  + adds a delete() method to be invoked after a fetch() method to create a pop() method
+    - if the delete() method is not invoked, the the fetch() method acts as a peek() method instead of a Stack's pop() method
+*** An Alternative Linked Stack
+- using a trick to make a singly linked list behave like a stack is undesirable for four reasons:
+  1. to retain the contents of the key field, an additional field must be added to the node
+  2. it requires the application programmer to have knowledge of the "trick"
+  3. the push anh pop operatoin methods are not named push and pop
+  4. if the client neglects to invoke the delete method after each fetch, the stack "simulation" breaks down
+- a more desirable approach to utilizing the trick is to write a new class, StackSLL, that includes a SinglyLinkedList object as a data member
+  + knowledge of the trick is then imbedded into the push() and pop() methods of the class
+* Other Types of Linked Lists
+** Circular Singly Linked Lists
+- a singly linked list in which the next field of the /last/ node refernces the /first/ node in the list
+  + when a dummy node is used, the last node in the list refernces theh dummy node
+- implementation is basically the same as a singly linked list with a few minor additions to account for the last node's ciurcular reference
+  + when the list is created, the next field of the dummy node is set to reference itself
+  + an unsuccessful fetch/delete results in a reference to the dummy node instead of a null reference
+** Double-ended Singly Linked List
+- a singly linked list in which insertions are premitted at the front (as usual) and rear of the list
+  + a newly inserted linked node can become either the new first node or the new last node in the list
+- to implement this structure, a refernce variable, /rear/, is added as a data member to the SinglyLinkedList class
+  + an additional insert method is also added
+- the variable /rear/ references the last node in the structure
+  + when the list is empty, /rear/ is null
+- the additional insert method is used to insert nodes at teh end of the linked list
+- when a new node is inserted at the end of the list, the last node's next field and the variable rear are changed to reference the new (last) node
+- a double-ended singly linked list is often used to implement the Queue structure
+** Sorted Singly Linked List
+- a singly linked list in which the nodes are positioned in a sorted order based on the contents of their key field
+- the insert algorithm must include a sequential search down the list to find the "correct location" for each new node
+- the major advantage of a sorted singly linked list structur is that its /showAll/ method outputs the nodes in sorted order
+- the major disadvantange is that the sequential search in the insert algorithm decreases the speed of both the insert() and update() operations
+  + for some applications that require sorted output and perform many insert operations, it is more efficient to store the nodes in an unsorted singly linked list and then sort them in the /showAll/ method
+** Doubly Linked List
+- a singly linked list in which each node in the list has an additional linked refernce field that refers to the node just before it in the list
+  + the additional refernce is named /back/
+- used for applications that require a backward traversal through the list
+** Multilinked List
+- linked lists in which the nodes are stored in a way that allows more than one traversal path through the nodes
+* Iterators
+- an *iterator* is an object that the /client/ can use to sequentially access the nodes in a linear list
+- typically, the iterator's class provides methods to
+  + position the iterator object at the first item in the list
+  + advance the iterator toh the next item
+  + determine if the iterator is at the end of the list
+  + provide methods to operate on the item at the iterator's current position
+- Several Iterator Methods of an Iterator Class
+| Iterator Method                     | Description                                                                                 |
+|-------------------------------------+---------------------------------------------------------------------------------------------|
+| pubic void reset()                  | positions the iterator at the dummy node                                                    |
+| public boolean hasNext()            | returns /true/ if there is a node after the iterator's current position                     |
+| public Listing next()               | moves the iterator to the next node /and/ then returns a refernce to a clone of its listing |
+| public void set(Listing newListing) | replaces the listing, stored at the iterator's current position, with a clone of newListing. The iterator's position is not changed |
+
+** Implementation of an Iterator
+- there are two common techniques used to implement an iterator class
+  1. define the class inside of the data structure class (i.e., as an inner class)
+     - the iterator object is a public data member of the data structure class
+     - the iterator class' methods insert and return /clones/ (deep copies)
+     - this technique is used when the data structure is encapsulated as it maintains the encapsulation of the structure
+  2. define the iterator class outside of the data structure class
+     - the iterator object is declared in the client code
+     - the iterator class' methods insert and return /shallow/ copies
+     - this technique is used when the data structure is not encapsulated as it gives direct access to the info contained in the structure
+** Multiple Iterators
+- some applications require two or more iterators to be operating on a list simultaneously
+  + programs with multiple threads often have this requirement
+- quantity can be explicitly declared or can be declared by client using an array
+*** External Iterators
+- another approach to implementing multiple iterators is to implement them in a way that allows the /client code/ to declare the iterator object references
+- the advantage is that the client can choose the names of the iterators (as well as the number)
+  + in this implementation, the Iterator class cannot be an inner class
+* Java's LinkedList Class and ListIterator Interface
+- LinkedList is contained in the package java.util
+  + it is an unencapsulated generic implementation of a double-ended, doubly linked list structure
+  + does not support key field access, but does support access through the node number mode or through the use of a client declared external iterator
+- The class contains methods to insert and fetch objects, to easily allow a LinkedList object to be used with a Stack or Queue, and to attach a client defined operator to a LinkedList object
+- The class implements ListIterator
