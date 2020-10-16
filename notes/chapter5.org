@@ -1,0 +1,103 @@
+#+TITLE: Chapter 5 - Hashed Data Structures
+
+* Hashed Data Structures
+- hashing is an alternate set of searching techniques for locating a nod in the key field mode
+  + unlike the Sequential Search algorithm, hashing algorithms are fast
+  + because of their speed, data structures that use hashing access algorithms are in wide use
+- there is a downside to hashing structures:
+  + for some applications, their overhead can be very high
+* Hashing Access Algorithms
+- hashing access algorithms are a collection of algorithms that share a common characteristic:
+  + the given key is used to /compute/ an index or a location into a /primary/ storage area
+- the primary storage area is a group of sequentially numbered storage cells
+  + it is usually implemented as an array
+  + sometimes the nodes themselves are stored in the primary storage area, sometimes its the paths to the nodes
+- the ability to compute an index into the primary storage area from the given key is what gives hashing access algorithms their speed
+  + sequential access algorithms perform time-consuming memory access to fetch keys from the data structure for comparison, which is slower
+- the computation of the index into the primary storage area is performed using a mathematical function, /h/, that uses the given key as a variable
+        /i/_/p/ = /h/(/k/)
+  + /i/_/p/ is the index into the primary storage area
+  + /h/ is the hashing (or mapping) function of a particular hashing access algorithm
+  + /k/ is the contents of the key field of the node being accessed
+- two of the most simplistic hashing functions used for numeric keys are:
+  1. Division Hashing function: /i/_/p/ = /h/(/k/) = /k/ % /N/
+  2. Hirect Hashig function: /i/_/p/ = /h/(/k/) = /k/
+  +where /N/ is the number of storage locations allocated to the primary storage area and /k/ is the given key
+- the Division function uses the division /remainder/ as the primary index while the Direct Hashing function uses the key as the primary index
+- /n/_max / /N/ is referred to as the maximum /loading factor/
+  + /n/_max is the maximum nodes that will be stored in the structure
+- if the key is negative or non-numeric, then some form of /preprocessing/ is performed on the key to convert it to a numeric, non-negative value
+  + this is called a pseudo key, /pk/, that is then used as the independent hashing function
+** A Hashing Example
+- the Division algorithm causes /collisions/ because it does not produce unique keys
+  + the resolution is handled with /collision algorithms/
+- collision algorithms reduch the speed of access becuase they add another processing step that usually involves multiple memory accesses
+- /perfect hashing/ algorithms map every key into a unique primary storage area index
+  + this unique mapping means that collisions cannot occur, and collission algorithms are not needed
+- a perfect hashing function that minimizes the unused portions of the primary storage area is called a /minimum/ perfect hashing function
+* Perfect Hashed Data Structures
+- a *perfect hashing function* is a function that maps each key, in a /static/ set of keys, into a /unique/ index in the primary storage area
+- a /static set of keys/ is the subset of all possible values of the key for which the function is valid
+- condition under which the direct hashing function approaches a minimal perfect hashing function:
+  + of the set of all possible key values, most (of all) of them will be stored in the structure
+** Direct Hashed Structure
+*** The Subtraction Preprocessing Algorithm
+- in a numeric key application when the minimum key balue is nonzero, a subtraction preprocessing algorithm is used to compute a pseudo key
+  + the pseudo key is then used in the Direct Hashing algorithm
+- this prevents the Direct Hashing algorithm from generating negative indices and improves the density when the minimum key is positive
+- the Suptraction Preprocessing algorithm is:
+        /p//k/ = /k/ - /k/_min
+  + /p//k/ is the calculated pseudo key
+  + /k/ is the given that can assume negative values
+  + /k/_min is the minimum value the key can assume
+**** Primary Storage Area
+- When an array of refernces are created in Java, each element is initialized to /null/
+  + a /null/ element can be used to indicate that the whose key maps into the element is not in the structure
+**** Operation Algorithms
+- the four basic operation algorithms for the perfect hashed structure will begin the same way
+  + the Direct Hashing structure will be used to determine the index into the primary storage area
+    - if necessary, a preprocessing algorithm will be used
+  + then, the element of the aray will be used as a refernce to the node
+* Nonperfect Hashed Structures
+- when the conditions of an application require high speed but are such that perfect hashing cannot be used, a non-perfect hashing structure is the next fastest alternative
+  + perfect hashing structures cannot be used when the key is not static, the density would be too low, or an efficient perfect hashing function cannot be discovered
+- these /hashed structures/ do /not/ provide a unique location in the primary storage area for every alowable value of the key
+  + as a result, two or more keys can map into the same primary storage index
+** Search Length
+- *search length* is the number of memory accesses required to locate the node
+- because the number of collisions varies from one operation to another, the average search length is used as a measure of the speed of a hashed structure
+  + the hope is that the average search length would be below /n/ / 2 since that is the average search length of a slow sequential search
+** Primary Storage Area Size
+- a guideline for sizing the primary storage area of a hashed data structure is that it be a small percentage higher than the structure's maximum number of nodes
+- the equation is thus:
+        /N/ = /n/_max + /p/ * /n/_max
+  + /N/ is the size of the primary storage area
+  + /n/_max is the maximum number of nodes to be stored in the structure
+  + /p/ is a percentage expressed in decimal form
+    - usually, the value of /p/ is 33%
+*** Optimum Loading Factor
+- two factors are normally discussed regarding hashed structures
+  1. the current loading factor, /l/
+  2. the maximum loading factor, /l/_max
+- the curren loading factor is computed using the maximum number of nodes that will be stored in the structure, /n/_max
+- Loading Factor formulas:
+        /l/ = /n/ / /N/ (current loading factor)
+        /l/_max = /n/_max / /N/ (maximum loading factor)
+  + /n/ is the number of nodes the structure /currently/ contains
+  + /N/ is the number of elements in the primary storage array
+  + /n/_max is the maximum number of nodes that will be stored in the structure
+*** Prime Numbers
+- if the primary storage area (/N/) is a prime number, the number of collisions for certain hashing functions and collision algorithms is minimized
+- the performance of some hashing and collision algorithms improves even further if we choose only primes of the type "4/k/ + 3"
+  + this is only a subset of all primes
+** Preprocessing Algorithms
+*** Fold-Shifting Preprocessing Algorithm
+- divides the key field into groups of bits, wih the size (number of bits) of each group being the desired size of the pseudo key
+  + then the groupings are traeted as numeric values and arithmetically added to produce the pseudo key
+- typically, one grouping near the middle of the key, called the /pivot/, is selected as the first operand in the addition
+  + arithmetic overflow from the hogher order bit is ignored, maintaining the size of the pseudo key
+*** Pseudorandom Preprocessing
+- a technique used to distribute keys somewhat /randomly/ about the primary storage area array
+  + generally speaking, introducing randomness into the preprocessing algorithm tends to reduce the collision frequencies.
+- Pseudorandom Preprocessing algorithm
+        /p//k/ = /p/_1 * /k/ + /p/_2
