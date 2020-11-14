@@ -109,4 +109,65 @@
 - a technique used to reduce the length of mulitposition (or multi-digit) keys and to introduce randomness into the pseudo keys it generates
 - several key positions (/m/ of them) are retained to form the pseudo key
   + all other key positions are ignored
--
+** Hashing Functions
+- there are many hashing functions used in hashed structures to compute the index intothe primary storage area
+  + this includes Direct Hashing and Division Hashing functions
+- most hashed data structures perform some form of preprocessing
+  + between the direct and division functions, teh Division algorithm is more commonly used in hashed structures
+** Collision Algorithms
+- can be divided into two categories:
+  + those algorithms that compute an index into the primary storage area, called /open address/ collision algorithms
+  + those that do not, called /non-open addressing/ collision algorithms
+- when open addressing is used, each element of the primary storage area stores a refernce to a /single node/
+  + the collision algorithm /always/ generates indexes into the primary storage area array
+- when non-open addressing is used, each element of the primary storage area can store a reference to /multiple nodes/
+  + this reference locates all the nodes that the preprocessing/hashing algorithms map into the element (/synonyms/)
+*** Linear and Quadratic Probing Collision Algorithms
+- these are two similar open addressing collision algorithms:
+        /i/_/p/ = /i/_/p/ + 1 (linear probing collision algorithm)
+        /i/_/p/ = /i/_/p/ + /p/^2 (quadratic probing collision algorithm)
+  + /i/_/p/ is the index into the primary storage area array
+  + /p/ is the pass number throuth the collision algorithm loop
+*** The Linear Quotient Collision Algorithm
+- like the Linear and Quadratic collision algorithms, it uses modulo /N/ arithmetic to keep the calculated indices within the bounds of the primary storage area array
+  + similarly, it also calculates the next location by adding an offset to the previously computed location
+- unlike those two, the offset is a function of the key (or pseudo key) which tends
+- the offset is a /division/ quotient and the functional relationship is a /linear/ one
+  + the quotient is the result of dividing the key (or pseudo key) by /N/
+    - when the quotient is evenly divisible by /N/, it is replaced wih a somewhat arbitrarily chosen 4/k/ + 3 prime
+- Linear Quotient Collision Algorithm
+        if(q % N) != 0
+            i_p = (i_p + offset) % N = (i_p + q) % N
+        else
+            i_p = (i_p + offset) % N = (i_p + p_4k+3) % N
+  + q = pk / N
+  + N is the number of elements in the primary storage area (a 4k+3 prime)
+  + pk is the value of the integer pseudo key (of key when no preprocessing is performed)
+  + p_4k+3 is any 4k+3 prime othe than N
+**** The Delete Problem
+- when a node is deleted, it's refence becomes null and there is no longer a record of collisions
+- the fix is to have two references
+  1. indicates that there has not been a refence at that location
+  2. indicates that there was once a refernce at the location, but it has been deleted
+- the second refence is usually to a dummy node
+** Dynamic Hashed Structures
+- the number of nodes specified by the client is typically used to establish the /initial/ size of the structure
+  + the structure will grow beyond its initial size to accommodate additional nodes
+- dynamic empansion of the data structure can be accomplished in a variety of ways
+  + the size of the primary storage area array can be increased to accommodate additional node references
+  + the additional storage can be provided outside of the primary storage area
+  + a hybrid structure can be used that combines the two
+- two popular approaches to providing additional storage outside of the primary storage area is to provide either a linked list of an array to store the additional node references
+*** Java's Dynamic Hashtable Data Structure
+- contained in the java.util package
+- is an implementation of a /dynamic/ hashed data structure
+- it is a nonhomogeneous, unencapsulated generic data structure accessed in the key field mode
+  + the key can be any type of object
+- structure is a dynamic hybrid: it expands its primary storage area and resolves collisions by providing additional storage for node refences outside of the primary key area
+*** Linked Hashed Data Structures
+- a common design of a dynamic hashed structure, it does not expand primary storage to accommodate additional nodes
+  + instead, it provides additional storage outside of the primary storage area in the form of multiple linked lists
+- each of the /N/ locations of the primary storage area array, commonly called a /bucket/, is a header of a singly linked list
+  + all of the nodes that has to a given location of primary storage are stored in the linked list associated with that (home) location
+- when a collision occurs during an insert operation, the length of the linked list is increased by one node
+  + for speed considerations, the new node is normally inserted at the beginning of the linked list
