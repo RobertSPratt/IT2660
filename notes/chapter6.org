@@ -1,0 +1,60 @@
+#+TITLE: Chapter 6 - Recursion
+
+* What Is Recursion?
+- recursive algorithm is an algorithm defined at least partially in terms of itself.
+- not all problems have recursive solutions
+  + when they can be used, they often offer an elegant and succinct alternative to iterative algorithms
+* Understanding Recursive Algorithms
+** /n/ Factoral
+- each step in a recursive algorithm is called a /level/ and the last step is called the /deepest/ level
+- the most basic level, the part that is "known to everyone," is called the /base case/
+** The Code of a Recursive Algorithm
+- in most programming languages, recursive algorithms are coded as subprograms (methods)
+  + some languages use a special syntax to indicate thtat it is using a recursive algorithm
+- a method is /directly recursive/ when it invokes itself
+- it is /indirectly recursive/ when it invokes a different method that invokes it in turn
+* Formulating a Recursive Algorithm
+** Definitions
+*** Base Case
+- the known portion of the problem solution
+  + the nonrecursive portion of the solution
+- often referred to as the /escape clause/ because it allows the algorithm to escape from the recursive invocations
+*** Reduced Problem
+- a problem very close to the /original/ problem, but slightly closer to the base case
+- an important quality of the reduced problem is that when it is repeatedly reduced, it degenerates into the base case
+  + if it does not eventually degenerate into the base case, the algorithm will enter an infinite loop
+    - this is often referred to as a /false base case/ because the statment that "the reduced problem degenerates into the base case" is false
+*** General Solution
+- the solution to the original problem expressed in terms of the reduced problem
+** Methodology
+- not all recursive algorithms can be formulated using this methodology
+  + it can be followed verbatim to produce a recursive algorithm for some problems and modified to accommodate most
+- the methodology consists of four steps:
+  1. determine the base case
+  2. determine the reduce problem
+  3. determine the general solution
+  4. combine the base case, reduced problem, and general solution to form the recursive algorithm
+*** Determining the Base Case
+- the easiest of the steps
+- identify a special case of the problem that has a known solution
+*** Determining the Reduced Problem
+- usually the most difficult of the steps
+- the reduced problem should:
+  + be a problem "similar" to the original problem
+  + be a small "step" away from the original problem in the "direction" of the base case
+  + degenerate into the base case when repeatedly reduced
+*** Determining the General Solution
+- answering the question "how can I use the reduced problem to generate, or solve, the original problem?"
+* Problems with Recursion
+- aside from the fact that thinking recursively does not come naturally to most, there are two major problems associated with the use of recursive algorithms:
+  1. they tend to run slowly
+  2. at run-time, they can consume an unacceptably large amount of main memory
+- both of these problems are amplified by the way that modern compilers transfer the execution path and shared information to and from methods
+  + because most operating systems dedicate limited amount of memory to the run-time stack, recursive programs can terminate with a "Stack Overflow" error
+** Dynamic Programming Applied to Recursion
+- incorporating dynamic programming into recursive algorithms makes it possible to retain the elegance of recursive solutions while approaching the speed and run-time stack requirements of iterative solutions
+  + this is a technique for efficiently computing solutions to problems that involve recurrences by storing partial results
+* Backtracking, an Application of Recursion
+- /backtracking/ is a problem solving technique that can be used to resolve a class of problems in which the obfective is to proceed to a goal from the starting point by successively making /n/ correct choices from a finite selection of choices
+  + the backtracking algorithm either determines a set of /n/ correct choices that achieves the goal, or it determines that the goal is unattainable
+- uses a trial-and-error technique

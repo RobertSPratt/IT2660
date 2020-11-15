@@ -1,0 +1,367 @@
+#+TITLE: Chapter 7 - Trees
+
+* Trees
+** Graphics and Terminology of Trees
+*** Directed (or General) Tree
+- a structure in which:
+  + there is a designated unique first node,
+  + each node in the structure, except for the unidue first node, has one and onely one node before it, and
+  + each node in the structure has n nodes after it
+*** Root Node
+- the unique first node in the structure
+  + a /root/ node does not have a node before it
+*** Leaf Nodes
+- nodes that have no (0) nodes after them.
+  + these are terminal nodes in the structure
+*** Parent (or Father) Nodes
+- a node's unique predecessor
+  + all nodes in a Tree are parent nodes, except for leaf nodes.
+*** Child (or Son) Nodes
+- a node that comes directly after another node.
+  + all nodes except for the root node are child nodes of some other node
+*** Grandchild, Great Grandchild, etc. Nodes
+- nodes that are a child of a child (of a child, etc.)
+*** Granpdarent, Great Grandparent, etc. Nodes
+- nodes that are a parent of a parent (of a parent, etc.)
+*** Outdegree of a Node
+- the number of children that a node has
+*** Outdegree of a Tree
+- the largest outdegree of any node within the structure
+*** Levels of a Tree
+- a sequential numbering assigned tho the descendents of the root node, with the root node at level 0
+  + each level increases with each "generation" of nodes
+*** Visiting a Node
+- visiting and performing an operation on a node within a tree
+*** Traversing a Tree
+- visiting each node in the tree once, and only once
+* Binary Trees
+- a /binary tree/ is a directed tree with maximum outdegree of two.
+  + this implies that each node in a binary tree can have a maximum of two children
+** Terminology
+*** Lef Child (Left Son) of a Node
+- in a standard tree graphic, the child node to the viewer's left
+*** Right Child (Right Son) of a Node
+- in a standard tree graphic, the child node to the viewer's right
+*** Left Subtree of a Node
+- in a standard tree graphic, the tree whose root is the left child of a node
+*** Right Subtree of a Node
+- in a standard tree graphic, the tree whose root is the right child of a node
+*** Complete
+- a binary tree is /complete/ if all the levels of the tree are fully populated
+  + thus all nodes, except for leaf nodes, should have two children
+*** Balanced
+- a tree is /balanced/ if all levels of the tree below the hightest level are fully populated
+  + this implies that all complete trees are balanced
+*** Complete Left (or Right)
+- a tree is /complete left/ if it is balanced *and* all the nodes at the highest level are on the left side of the level
+  + a tree is /complete right/ if it is balanced and all nodes at the highest level are on the right side.
+** Mathematics
+*** Maximum Number of Nodes at Level l of a Binary Tree
+- /nl_max/ = 2^/l/
+*** Maximum Number of Nodes in a Tree with L levels
+- A tree with L levels will contain a maximum number of nodes when all of its levels are fully populated
+  + meaning when the tree is complete
+- /nL_max/ = 2^/l/ - 1
+*** Minimum Number of Levels in a Tree with N Nodes
+- the number of levels in a tree with N nodes will be at a minimum when the tree is balanced
+  + all levels except the lowest level are fully populated
+- L = log_2(N+1)
+  + if N is such that the tree is balanced but not complete, then the highest level would not be fully populated and this equation would not yield an integer value
+- L = ceiling(log_2(N + 1))
+  + by using the /ceiling/ of the function, we take into account the fact that the tree might not be fully populated
+* Binary Search Trees
+- a /binary search tree/ is a binary tree in which the key field value of the root node is greater that the key field values of all of the nodes in the root's /left subtree/ and /less than/ the key field values of /all/ of the nodes in the root's /right subtree/.
+  + in addition, each subtrre in the tree is also a binary search tree
+- the positioning of the nodes in a binary search tree consistent with its definition is performed bithe Insert operation following this five-step process:
+  1. the first node inserted becomes the root node
+  2. for any subsequent node, consider the root node to be a root of a subtree, and start at the root of this subtree
+  3. mopare the new node's key to the root node of the subtree
+     a. if the new node's key is /smaller/, then the new subtree is the root's left subtree
+     b. else, the new subtree is the root's /right/ subtree
+  4. repeat step 3 until the new subtree is empty
+  5. insert the node as the root of this empty subtree
+** Basic Operataion Algorithms
+*** The Graphical Circle Symbol Meaning
+- under the linked implementation, the circle represents two objects:
+  1. a TreeNode object - has three data members, all of which are reference variables
+  2. a Listing object - one of the data memebers of the TreeNode object, containing the location of the information stored in the structure
+*** Initialization Algorithm
+- declares the root node, setting it to /null/
+*** Insert Algorithm and the findNode Method
+- it is useful to assume the existence, and make use of, a findNode method
+- pseudocode for the insert and findNode methods:
+#+BEGIN_SRC java
+//Binary Tree Insert Algorithm
+TreeNode n = new TreeNode();
+n.node = newListing.deepCopy(); //copy the node and make it a leaf node
+n.lc = null;
+n.rc = null;
+if(root == null) //the tree is empty
+    root = n;
+else { //the tree is not empty
+    findNode(root, newListink.key, P, C); //find the new node's parent
+    if(newLinsting.key < P.node.key) //new node is the parent's left child
+        P.lc = n;
+    else //new node is the paernt's right child
+        P.rc = n;
+}
+
+//Recursive version of the findNode Algorithm
+if(root == null) //first base case
+    return false;
+C = root;
+if(targetKey == C.node.key) //second base case
+    return true;
+P = C;
+if(targetKey < C.node.key) //look in the left subtree
+    root = C.ls;
+else //look in the right subtree
+    root = C.rs;
+return findNode(root, targetKey, P, C); //reduced problem and general solution
+
+//Iterative version of the findNode Algorithm
+P = root;
+C = root;
+while(C != null) {
+    if(targetKey == C.node.key) //node found
+        return true;
+    else {//continue searching
+        P = C;
+        if(targetKey < C.node.key) //move into left subtree
+            C = C.lc;
+        else //move into the right subtree
+            C = C.rc;
+    }
+}
+return false
+#+END_SRC
+*** Fetch Algorithm
+- the fetch method can invoke the findNode method and return a deep copy of the returned/found node
+#+BEGIN_SRC java
+//Binary Search Tree Fetch Algorithm pseudocode
+found = findNode(root, targetKey, P, C); //place the location of the node in C
+if(found == true)
+    return C.node.deepCopy();
+else
+    return null;
+#+END_SRC
+*** Delete Algorithm
+- this is the most complicated algorithm thus far and is traditionally broken into three cases:
+  1. the node tho be deleted has no children; it is a leaf
+  2. the node tho be deleted has one child or subtree
+  3. the node to be deleted has two children or subtrees
+**** Case 1: The Node to be Deleted has No Children (is a Leaf)
+- this portion of the delete algorithm simply breaks the connection between the deleted node, C, and the paren node, P, by setting P's reference to the node to /null/
+#+BEGIN_SRC java
+//Binary Search Tree Delete Algorithm, Case 1 pseudocode
+found = findNode(root, targetKey, P, C);
+if(found == false) //node not found
+    return false;
+if(C.lc == null && C.rc == null) { //Case 1
+    if(P.lc == C) //the deleted node is a left child
+        P.lc == null;
+    else //the deleted node is a right child
+        P.rc == null;
+    return true;
+} //end of Case 1
+#+END_SRC
+**** Case 2: The Node to be Deleted has One Child or Subtree
+- this portion of the algorithm separately considers the following four possibilities involving the node to be deleted, C, and its parent, P:
+  1. C is a /left/ child of P, and C has a /left/ child or subtree
+  2. C is a /left/ child of P, and C has a /right/ child or subtree
+  3. C is a /right/ child of P, and C has a /left/ child or subtree
+  4. C is a /right/ child of P, and C has a /right/ child or subtree
+#+BEGIN_SRC java
+//Binary Search Tree Delet Algorithm, Case 2 pseudocode
+found = findNode(root, targetKey, P, C);
+if(found == false) //node not found
+    return false;
+if(C.lc != null && C. rc == null || C.rc != null && C.lc == null) { //Case 2
+    if(P.lc == C) { //deleted node has a left child, Case 2.1 or 2.2
+        if(C.lc != null) //deleted node has a left child, Case 2.1
+            P.lc = C.lc;
+        else
+            P.rc = C.rc;
+    } //end of deletion of a left child
+    else { //deleted node is a right child, Case 2.3 or 2.4
+        if(C.lc != null) //deleted node has a left child, Case 2.3
+            P.rc = C.lc;
+        else
+            P.rc = C.rc;
+    } // end of deletion of a right child
+    return true;
+} //end of Case 2;
+#+END_SRC
+**** Case 3: The Node to be Deleted has Two Children or Subtrees
+- the final portion of the delete algorithm separateley considers four possibilities:
+  1. C is a /left/ child of P, and C's left child /has/ a right subtree
+  2. C is a /right/ child of P, and C's left child /has/ a right subtree
+  3. C is a /left/ child of P, and C's left child /has no/ right subtree
+  4. C is a /right/ child of P, and C's left child /has no/ right subtree
+#+BEGIN_SRC java
+//Binary Search Tree Delete Algoritm, Case 3 pseudocode
+found = findNode(root, targetKey, P, C);
+if(found == false) //node not found
+   return false;
+if(C.lc != null && C.rc != null) { //Case 3
+    nextLargest = C.lc;
+    largest = nextLargest.rc;
+    if(largest != null) { //left child of deleted node has a right subtree, Cases 3.1 & 3.2
+        while(largest.rc != null) { //move down the right edge of the right subtree
+            nextLargest = largest;
+            largest = largest.rc;
+        } //end of while loop, replacement node has been located
+        C.node = largest.node; //"relocate" the replacement node
+        nextLargest.rc = largest.lc; //save left subtree of the relocated node
+    } //end of the right subtree exits case
+    else { //the left child of deleted node does not have a right subtree, Cases 3.3 & 3.4
+        nextLargest.rc = C.rc; //save the right subtree of the releted node
+        if(P.lc == C) /deleted node is a left child
+            P.lc == nextLargest; //deleted node's parent jumps around deleted node
+        else //deleted node is a right child
+            P.rc == nextLargest; //deleted node's parent jumps around deleted node
+    } //end of no right subtree
+    return true;
+} //end of Case 3
+#+END_SRC
+** Standard Tree Traversals
+- the most often used traverses fall into two groups:
+  1. those that visit /all the nodes at a given level/ (siblings) before proceeding to the next level
+     - called /breadth-first/ traverses
+  2. those that visit /all children/ of a node before vising the node's siblings
+     - called /depth-first/ traverses
+- the most used traverese in the depth-fist group have been given names indicative of the orde in which they visit nodes:
+  + *LNR* - traverses the /left/ subtree, then visits the root /node/, then traverses the /right/ subtree
+    - alternately called /inorder scanning/
+  + *LRN* - traverses the /left/ subtree, then traverses the /right/ subtree, the visits the root /node/
+    - alternately called /postorder scanning/
+  + *NLR* - visits the root /node/, then travereses the /left/ subtree, then traverses the /right/ subtree
+    - alternately called /preorder scanning/
+  + *NRL* - visits the root /node/, then traverses the /right/ subtree, then traverses the /left/ subtree
+  + *RLN* - traverses the /right/ subtree, then traverses the /left/ subtree, then visits the root /node/
+  + *RNL* - traverese the /right/ subtree, then visits the root /node/, then traverses the /left/ subtree
+- in depth-first traversal, every subtree is travered using the same method as the tree
+  + the trees are travesed recursively
+#+BEGIN_SRC java
+//LNR Recursive Traversal Algorithm pseudocode
+LNRtraversal(TreeNode root) { //assumes the root is passed as a parameter
+    if(root.lc != null) //traverse the left subtree
+        LNRtraversal(root.lc);
+    visit(root); //operate on the root node
+    if(root.rc != null) //traverse the right subtree
+        LNRtraversal(root.rc);
+}
+#+END_SRC
+** Balanced Search Trees
+*** AVL Trees
+- a more efficient technique for keeping a binary search tree balanced
+  + developed by two mathematicians in the 1960s: G. M. Andelson-Velskii and E. M. Landis
+- balancing is accomplished by expanding the Insert and Delete algorithms
+- a parameter called a /balanced factor/ is used to decide when to rebalance the tree
+  + stored as an additional piece of information for each node
+  + is the difference in the number of levels in the node's left and right subtrees
+  + factors of a balanced tree are 1, 0, or -1
+    - +1 is /left high/
+    - 0 is /even high/
+    - -1 is /right high/
+- rebalancing is done through rotation algorithms that shift the original root node to a side of the tree
+  + it is replaced with a node from the unbalanced side, shrinking that side and expanding the other
+*** Red-Black Trees
+- invented by Rudolf Bayer in 1972
+  + one of the more popular self-balancing tree algorithms
+- shares many characteristics with AVL trees
+  + same Fetch and Update algorithms
+  + both incorporate rotations into the binary search tree's Insert and Delete algorithms
+- Neither Red-Black or AVL trees are perfectly balanced, but AVL trees typically come closer
+  + Red-Black trees can contain twice as many levels (2 * log_2(n + 1) levels) as a balanced tree
+- Red-Black trees outperform AVL trees because their rebalancing process is more efficient
+  + the Java API structure TreeMap is a Red-Black tree
+- named because each node is given one of two colors (red or black), which can change during Insert and Delete operations
+  + the root node is always black
+- in additional to the usual binary search tree ordering, Red-Black trees must comply with the following:
+  1. every node in the tree must be red or black
+  2. the root node of the tree is always black
+  3. if a node is red, its children must be black
+  4. every path from a node to a /null/ link (a leaf's left or right /null/ reference) must contain the same number of black nodes
+  5. the tree must be a binary search tree
+- whereas AVL trees rebalance when balance factors exceed 1 in either direction, Red-Black trees rebalance whenever compliance with 3 & 4 above is not met
+- rotations performed by Red-Black trees are similar to those of AVL trees, but are more complicated to account for color changes
+- the coloring of the nodes in a Red-Black tree provides sufficient information to initiate color adjustments and rotations /as the algorithm moves down the tree/ looking for the insertion point or node to be deleted
+  + this keeps the tree near balanced, making the additional upward traversal required to balance the AVL tree unnecessary, giving Red-Black trees the performance advantage
+*** Array Implementation of a Binary Search Tree
+- for some applications, an array-based implementation of a binary tree offers a more officient means of representing a binary tree
+  + rather than storing the instead of storing the addresses in a TreeNode object, adresses are stored in an /array/ of references to variables
+    - the location of the root node's information is always stored at index 0 of the array
+    - the location of a node's left child will be stored at index 2i + 1
+    - the location of a node's right child will be stored at index 2i + 2
+**** Operation Algorithms
+- Insert Operation
+  + can return false (can fail) even if not full if the tree is significantly unbalanced
+#+BEGIN_SRC java
+//Array-Based Binary Search Tree Insert Algorithm pseudocode
+Insert(Node newListing) {
+    i = 0;
+    while(i < size && data[i] != null) { //continue search for an insertion point
+        if(data[i].key > newListing.key) //go into left subtree
+            i = 2 * i + 1;
+        else //go into left subtree
+            i = 2 * i + 2;
+    } //end search
+    if(i >= size) //node position exceeds the bounds of the array
+        return false;
+    else { //insert the node
+        data[i] = newListing.deepCopy();
+        return true;
+    }
+}
+#+END_SRC
+- Fetch Operation
+#+BEGIN_SRC java
+//Array-Based Binary Search Tree Ferch Algorithm
+Fetch(Node target) {
+    i = 0;
+    while(i < size && data[i] != null && data[i].key != target.key) { //search
+        if(data[i].key > target.key) //go into left subtree
+            i = 2 * i + 1;
+        else //go into the right subtree
+            i = 2 * i + 2;
+    } //end the search
+    if(i >= size || data[i] == null) //node not found
+        return null;
+    else //return the node
+        return data[i].deepCopy();
+}
+#+END_SRC
+- Implementation
+  + the density of the structure can degrade rapidly if the tree is imbalanced
+    - there is a range of imbalance within which the density is good and the structur is quite serviceable, if the speed is acceptable to the client
+  + the constructor's parameter list will need to include all necessary information to size the array in a way that the density of the structure meets minimum needs
+  + the size of the array /N/, will be calculated by the constructor as:
+        /N/ = n(1 / /D/_/BSA/ - 1)w / 4
+    - /N/ is the size of the awway (/N/ >= n)
+    - /D/_/BSA/ is the desired density (/D/_/BSA/ <= (1 / (1 + 4 / w)))
+    - /n/ is the maximum number of nodes to be stored in the structure
+    - /w/ is the node width in bytes
+#+BEGIN_SRC java
+//Constructor of the Binary Tree's Array class
+public BinaryTreeArray(int n, int w, int d) {
+    if(d > 1 / (1 + 4/w))
+        size = n;
+    else
+        size = n * (1/d - 1)*(w / 4);
+    data = new Listin[size];
+}
+#+END_SRC
+** Java's TreeMap Data Structure
+- contained in the package java.util and is an implementation of a Red-Black tree
+- is an unencapsulated generic data structure accessed in the key field mode
+  + key can be any type of bkect, but the key's class must implement Java's =Comparable= interface
+    - it must contain a method whose signature is
+      #+BEGIN_SRC java
+      public int compareTo(KeyObjectType aKey)
+      #+END_SRC
+- the class =TreeMap= has four constructors, the default of which sorts the nodes into tre Red-Black tree according to the key's natural order
+  + the following declares a =TreeMap= structure that stores =Listing= objects in a Red-Black tree named =dataBase=, ordered based on a =String= key:
+    #+BEGIN_SRC java
+    TreeMap<String, Listing> dataBase = new TreeMap<String, Listing>();
+    #+END_SRC
