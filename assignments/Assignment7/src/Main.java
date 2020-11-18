@@ -44,7 +44,7 @@ public class Main {
                 case 2: //fetch a listing
                     System.out.print("Enter the student's name to view record: ");
                     key = keyboard.nextLine();
-                    result = b.fetch(key).l.deepCopy();
+                    result = b.fetch(key).listing.deepCopy();
                     if(result == null)
                         System.out.println("Record not found.");
                     else
@@ -72,7 +72,7 @@ public class Main {
                         case 1:
                             System.out.print("Enter the new name: ");
                             name = keyboard.nextLine();
-                            if(b.update(key, new Listing(name, b.fetch(key).l.getID(), b.fetch(key).l.getGPA())))
+                            if(b.update(key, new Listing(name, b.fetch(key).listing.getID(), b.fetch(key).listing.getGPA())))
                                 System.out.println("Record could not be updated.");
                             else
                                 System.out.print("Record successfully updated.");
@@ -80,7 +80,7 @@ public class Main {
                         case 2:
                             System.out.print("Enter the new student ID number: ");
                             sID = keyboard.nextLine();
-                            if(b.update(key, new Listing(b.fetch(key).l.getKey(), sID, b.fetch(key).l.getGPA())))
+                            if(b.update(key, new Listing(b.fetch(key).listing.getKey(), sID, b.fetch(key).listing.getGPA())))
                                 System.out.print("Record could not be updated.");
                             else
                                 System.out.print("Record successfully updated.");
@@ -88,7 +88,7 @@ public class Main {
                         case 3:
                             System.out.print("Enter the new student GPA: ");
                             gpa = keyboard.nextLine();
-                            if(b.update(key, new Listing(b.fetch(key).l.getKey(), b.fetch(key).l.getID(), gpa)))
+                            if(b.update(key, new Listing(b.fetch(key).listing.getKey(), b.fetch(key).listing.getID(), gpa)))
                                 System.out.println("Record could not be updated.");
                             else
                                 System.out.print("Record successfully updated.");
@@ -100,105 +100,104 @@ public class Main {
         } while(choice != 6);
     }
     public static class BinaryTree {
-        BTNode r;
+        BTNode rootNode;
 
         public BinaryTree() {
-            r = new BTNode();
+            rootNode = new BTNode();
         }
 
         //allows recursive method to be called from main without
         //requiring access to the tree's nodes
         public boolean insert(Listing l) {
-            BTNode p = new BTNode();
-            BTNode c = r;
-            return insertBNTNode(p, c, l);
+            BTNode parent = new BTNode();
+            BTNode child = rootNode;
+            return insertBNTNode(parent, child, l);
         }
 
-        public boolean insertBNTNode(BTNode p, BTNode c, Listing listing) {
-            if(c.l == null) {
-                c.l = listing.deepCopy();
-                if(c == r)
-                    c.p = null;
+        public boolean insertBNTNode(BTNode parent, BTNode child, Listing l) {
+            if(child.listing == null) {
+                child.listing = l.deepCopy();
+                if(child == rootNode)
+                    child.parent = null;
                 else
-                    c.p = p;
+                    child.parent = parent;
                 return true;
             }
-            else if(c.l.getKey().equals(listing.getKey()))
+            else if(child.listing.getKey().equals(l.getKey()))
                 System.out.println("This listing already exists.");
             else {
-                p = c;
-                if(listing.getKey().compareTo(c.l.getKey()) < 0) {
-                    if (p.lc == null) {
-                        p.lc = new BTNode();
+                parent = child;
+                if(l.getKey().compareTo(child.listing.getKey()) < 0) {
+                    if (parent.leftChild == null) {
+                        parent.leftChild = new BTNode();
                     }
-                    insertBNTNode(p, p.lc, listing);
+                    insertBNTNode(parent, parent.leftChild, l);
                 }
                 else {
-                    if (p.rc == null) {
-                        p.rc = new BTNode();
+                    if (parent.rightChild == null) {
+                        parent.rightChild = new BTNode();
                     }
-                    insertBNTNode(p, p.rc, listing);
+                    insertBNTNode(parent, parent.rightChild, l);
                 }
             }
             return false; //default to a failed entry
         }
 
         public BTNode fetch(String key) {
-            BTNode p = new BTNode();
-            BTNode c = r;
-            c = findBTNode(p, c, key);
-            return c;
+            BTNode child = rootNode;
+            child = findBTNode(child, key);
+            return child;
         }
 
         public boolean delete(String key) {
-            BTNode p = new BTNode();
-            BTNode c = r;
+            BTNode parent;
+            BTNode child = rootNode;
             BTNode leftChild, rightChild;
-            c = findBTNode(p, c, key);
-            p = c.p;
-            if(c.l == null)
+            child = findBTNode(child, key);
+            parent = child.parent;
+            if(child.listing == null)
                 return false;
             else {
                 //listing has no children
-                if(c.lc == null && c.rc == null) {
-                    if (p.lc == c)
-                        p.lc = null;
+                if(child.leftChild == null && child.rightChild == null) {
+                    if (parent.leftChild == child)
+                        parent.leftChild = null;
                     else
-                        p.rc = null;
+                        parent.rightChild = null;
                 }
                 //listing has only one child
-                else if(c.lc == null || c.rc == null) {
-                    if(p.lc == c) {
-                        if(c.lc != null)
-                            p.lc = c.lc;
+                else if(child.leftChild == null || child.rightChild == null) {
+                    if(parent.leftChild == child) {
+                        if(child.leftChild != null)
+                            parent.leftChild = child.leftChild;
                         else
-                            p.lc = c.rc;
+                            parent.leftChild = child.rightChild;
                     }
                     else {
-                        if(c.lc != null)
-                            p.rc = c.lc;
+                        if(child.leftChild != null)
+                            parent.rightChild = child.leftChild;
                         else
-                            p.rc = c.rc;
+                            parent.rightChild = child.rightChild;
                     }
                 }
                 //listing has two children
                 else {
-                    leftChild = c.lc;
-                    rightChild = leftChild.rc;
+                    leftChild = child.leftChild;
+                    rightChild = leftChild.rightChild;
                     if(rightChild != null) { //left child has a right subtree
                         while(rightChild != null) {
                             leftChild = rightChild;
-                            rightChild = rightChild.rc;
+                            rightChild = rightChild.rightChild;
                         }
-                        c.l = leftChild.l;
-                        leftChild.l = null;
+                        child.listing = leftChild.listing;
+                        leftChild.listing = null;
                     }
                     else { //left child does not have a right subtree
-                        leftChild.rc = c.rc;
-                        if(p.lc == c)
-                            p.lc = leftChild;
+                        leftChild.rightChild = child.rightChild;
+                        if(parent.leftChild == child)
+                            parent.leftChild = leftChild;
                         else
-                            p.rc = leftChild;
+                            parent.rightChild = leftChild;
                     }
                 }
                 return true;
@@ -214,40 +213,39 @@ public class Main {
 
         //allows for calling from main method
         public void output() {
-            RNLOutput(r);
+            RNLOutput(rootNode);
         }
 
         public void RNLOutput(BTNode n) {
-            if(n.rc != null)
-                RNLOutput(n.rc);
-            System.out.print(n.l.toString());
-            if(n.lc != null)
-                RNLOutput(n.lc);
+            if(n.rightChild != null)
+                RNLOutput(n.rightChild);
+            System.out.print(n.listing.toString());
+            if(n.leftChild != null)
+                RNLOutput(n.leftChild);
         }
 
-        public BTNode findBTNode(BTNode p, BTNode c, String key) {
-            if(c == null) {
+        public BTNode findBTNode(BTNode child, String key) {
+            if(child == null) {
                 return null;
             }
             else {
-                p = c;
-                if(key.compareTo(c.l.getKey()) < 0)
-                    return(findBTNode(p, p.lc, key));
-                else if(key.compareTo(c.l.getKey()) > 0)
-                    return(findBTNode(p, p.rc, key));
-                return c;
+                if(key.compareTo(child.listing.getKey()) < 0)
+                    return(findBTNode(child.leftChild, key));
+                else if(key.compareTo(child.listing.getKey()) > 0)
+                    return(findBTNode(child.rightChild, key));
+                return child;
             }
         }
 
         public class BTNode {
-            private BTNode p, lc, rc; //parent, left child, right child
-            private Listing l;
+            private BTNode parent, leftChild, rightChild;
+            private Listing listing;
 
             public BTNode(Listing l) {
-                this.p = null;
-                this.lc = null;
-                this.rc = null;
-                this.l = l;
+                this.parent = null;
+                this.leftChild = null;
+                this.rightChild = null;
+                this.listing = l;
             }
 
             public BTNode() {
