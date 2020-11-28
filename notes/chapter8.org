@@ -1,0 +1,149 @@
+#+TITLE: Chapter 8 - Sorting
+
+* Sorting
+- two most common orderings are:
+  + ascending order
+  + descending order
+- most often, nodes are sorted for one of two reasons:
+  + to produce sorted output listings
+  + to improve the speed of a data structure
+- another important reason for outputting nodes in sorted ordes is dwaring conclusions
+- why aren't all output listings and data sets sorted?
+  + sorting takes time
+* Sorting Algorithm Speed
+- all sorting algorithms have two features in common:
+  + two data items are /compared/ in order to determine their relative position in the sorted list
+  + the data items are /swapped/ (based on these comparisons)
+- both of these features require memory accesses that can be counted using the algorithms analysis techniques discussed in the previous chapters
+- in the case of sorting algorithms, it is useful to know not only the total number of memory accesses but how many were the result of swap operations and how many were the result of comparison operations.
+  + this more detailed level of analysis allows for a better understanding of why some algorithms are faster than others.
+  + a parameter in this analysis is /sort effort/, which is defined as: =Sort Effort (SE) - number of /comparisons/ required to sort /n/ items=
+** Minimum Sort Effort
+- the /minimum sort effort/ (SE_min) is the theoretical minimum number of comparisons required to sort /n/ randomly arranged arranged items
+- Minmum sort effort: =SE_min = O(/n/log_2/n/)=
+* Sorting Algorithms
+** The Binary Tree Sort
+- the Binary Tree Sort algorithm is
+  1. the first item becomes the root node
+  2. for any subsequent item, consider the root node to be a root of  subtree, and start at the root of this subtree
+  3. compare the item to the root of the subtree
+     a. *if* the new item is /less/ than the subtree's root, then the new subtree is the root's /left/ subtree
+     b. *else* the new subtree is the root's /right/ subtree
+  4. repeat step 3 until the new subtree is empty. Position the new item as the root of this empty subtree
+  5. repeat steps 2, 3, and 4 for each item to be sorted
+*** Speed
+- the speed of this algorithm is dependent upon how well the binary tree is balanced
+*** Memory Overhead
+- the algorithm requires /2n/ reference variables of additional storage
+  + assuming each reference variable occupies 4 bytes, the total overhead for the algorithm is /8n/ bytes
+** The Bubble Sort
+- the bubble sort is the simblest sorting algorithm of those discussed
+  + for data sets that are already sorted, or close to sorted, it offers good performance
+- because of its simplicity, it is easy to code
+  + it is used for randomized data sets with few members
+- like all sorting algorithms, this algorithm executes inside a loop
+  + in the jargon of sorting, each iteration through this loop is referred to as a "pass through the sorting algorithm"
+  + during each "pass" through this algorithm, the smaller items rise, or /bubble/ upward, toward the top of the array
+- each pass places one item into its final position ito the array
+- to take advantage of the fact that sometimes the algorithm completes the sort without needing to do all passes, a Boolean variable =flip= is set to =false= /before each pass/
+  + whenever a flip is performed, =flip= is set to =true=
+  + if at the the end of a pass, =flip= is still set to =true=, no two elements of the array were out of sorted order and the entire array is sorted
+- pseudocode for the algorithm:
+#+BEGIN_SRC java
+itemsSorted = 0;
+do {
+    flip = false; //begin a pass
+    for(b = n - 1, t = n - 2; t >= itemsSorted; b--, t--) {
+        if(items[b] < items[t]) //two adjacent elements are not in sorted order {
+        //swap the two elements
+        //set flip to true
+        }
+    }
+    itemsSorted++; //one more item is in its final poitioning in the array
+} while(flip == true && itemsSorted != n - 1);
+#+END_SRC
+*** Speed
+- like the Binary Tree Sort algorithm, there are particular characteristics of the data to be sorted that result in very fast or very slow Bubble Sort speeds.
+  + ironically, one case that was very /slow/ for the Binary Tree Sort--when the information was to be sorted is initially in ascending order--is very /fast/ for the Bubble Sort
+*** Memory Overhead
+- when this algorithm is presented with an array of primitive values or an array of object references, the primitive values/references are swapped within the array
+  + the only extra storage required to perform the algorithm is one extra memory cell (=temp=), used to perform the swap
+** The Heap Sort
+- a /heap/ is a binary tree in which the value of /each parent/ in the tree is /greater than both/ of its /children's/ values
+  + although only small subsets of all binary trees are heaps, there are some very useful algorithms that can only be used if the tree they process is a heap
+- in the context of heaps that store primitives, the term /value/ refers to the value of a primitive
+  + in the context of heaps that store objects, the term /value/ refers to the value of the object's key field
+- the definition of a heap excludes them from being binary search trees a node's right child cannot be greater than its parent
+- each subtree in a heap must also be a heap.
+- The Heap Sort Algorithm:
+  1. Place all the items to be sorted in a left balanced binary tree
+  2. Build the inicial heap (i.e., reposition the items in the tree to make it a heap)
+  3. Repeatedly
+     a. swap the root node into its "proper" position, and
+     b. rebuild the remaining items into a heap
+- to /reposition the nodes in the tree to make it a heap/, referred to as /building the initial heap/, the highest level of the tree that has parent nodes is examined.
+  + if there are several parent nodes at the level, then the rightmost one is chosen, referred to as the highest-level-rightmost-parent
+- index of the Hightest-Level-Rightmost-Parent in a Left Balanced Binary Tree:
+  + in a left balanced binary tree with /n/ nodes, the index of the hightest-level-rightmost-parent is =floor[(/n/ / 2) - 1]=.
+- the /Reheap Downward Algorithm/ is the process of comparing a parent node to each of its children and then moving the parent downward in the tree until it is greater than both of its children
+*** Speed
+- with a sort effort of =O(/n/log_2/n/)=, it approaches the theoretical minimum sort effort
+  + sinch the character of the items to be sorted was not considered in its derivation, the Heap Sort algorithm achieves these speeds for all data sets
+- when this algorithm is presented with an array of primitive values or an array of references to objects, the primitive values or the object references are swapped within the array
+  + the only extra memory required is a single variable =temp=
+** The Merge Sort
+*** Speed
+- number of passes through the Merge Sort Algorithm =P_MS = log_2/n/=
+- this algorithm is fast for all data sets, but it requires a moderate amount of overhead
+*** Memory Overhead
+- the memory overhead is the size of the /n/ element array =temp=, resulting in an overhead of 4/n/ bytes
+** Quicksort
+- if not the most popular sorting algorithm, is the most written about
+  + its popularity is based on the simplicity of its recursive implementation (it can be coded in 20 executable Java statements) and its average speed
+- during each pass through this algorithm, the data item in the middle of the unsorted array is chosen to be a /pivot value/
+  + by the end of the pass, the item is poisioned into its proer sorted place in the array
+  + additionally, the other items in the array have been positioned such that the items to the left of it are lesser than it and the items to the right are greater
+- to complete the algorithm, the left and right partitions are considered unsorted arrays
+  + the algorithm operates on each of the recursively
+#+BEGIN_SRC java
+//Quick Sort pseudocode
+public static void quickSort(int[] items, int leftIndex, int rightIndex) {
+    int i, j, temp, pivotValue, partitionSize;
+    partitionSize = rightIndex - leftIndex + 1;
+    if(partitionSize <= 1) //base case, one item to be sorted
+        return;
+
+    pivotValue = items[(leftIndex + rightIndex) / 2];
+    i = leftIndex; //initialize the two partition indices
+    j = rightIndex;
+
+    //look for items in wrong partitions and switch them
+    do {
+        while(items[i] < pivotValue) //left item is in correct partition
+            i++;
+        while(items[j] > pivotValue) //right item is in correct partition
+            j--;
+        if(i <= j) { //pointers have not crossed, switch items
+            temp = items[i];
+            items[i] = items[j];
+            items[j] = temp;
+            i++;
+            j--;
+            }
+    } while(i <= j); //the pointers have not crossed
+
+    //reduced problems
+    quickSort(items, leftIndex, j); //sort left partition
+    quickSort(items, i, rightIndex); //sort right partition
+}
+#+END_SRC
+*** Speed
+- when the character of the data set is such that the pivot value's correct positions are always in the middle of the partitions, =log_2(/n/-1)= passes are made through the algorithm
+  + when it is such that the correct positions are always at one end of the partitions, then one of the partitions will contain one item and the other will contain all the others
+    - this will require /n/ passes to be made
+- the number of passes required is ~log_2(/n/-1) <= /p/ <= /n/~
+  + empirical studies show that the average number of passes to sort is =1.45log_2(/n/)=
+- on average, the sort effort ot this algorithm approaches the theoretical minimum
+*** Memory Overhead
+- this algorithm is the fastest (for most data sets), has low overhead, and is easy to code
+  + for some rare data sets, the speed of this algorithm is =O/n/^2= and its overhead is 8/n/
