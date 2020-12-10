@@ -1,0 +1,448 @@
+#+TITLE: Chapter 9 - Graphs
+
+* Introduction
+- trees and linked lists are subsets of graphs
+- graphs are composed of a collection of nodes, called /vertices/ in graph theory
+- like the nodes of trees and linked lists, the vertices of graphs also have ordering
+  + the relationship is called /adjacency/
+  + two nodes that have a parent-child relationship in a tree would be adjacent in a graph
+- the lines that connect the vertices are called /edges/
+- there are no restrictions as to which vertices can be adjacent
+  + edges of a graph can also contain a piece of information, called the edge weighting
+** Graphics and Terminology of Graphs
+*** Standard depiction of a graph
+- in the standard depicion of a graph, the vertices are represented by circles and the edges are represented by either lines or arrows drawn between two vertices
+- arrows are used to indicate /unidirectional/ of travel between two vertices, while lines depict /bidirectional/ travel
+  + arrows and lines are never mixed in a depiction of a graph
+*** Graph
+- a graph is a set of vertices and a set of edges that connect pairs of vertices
+*** Directed Graphs (Digraphs)
+- a graph in which all of the graphs edges permit travel in only one direction
+  + to depict the direction of travel, the edges of a digraph are drawn as arrows in their graphical representation
+- it could be the case that travel is permitted in both directions between two vertices in a digraph
+  + when this is the case, the vertices are considered to have two distinct edges represented by two opposite-facing arrows in their graphical depiction
+- undirected graphs are referred to simply as graphs, and directed graphs are referred do as digraphs
+*** Weighted Graphs
+- a directed or undirected graph in which each edge has a weighting factor assigned to it
+*** Adjacent Vertices
+- two vertices are said to be adjacent if there is an edge between them
+*** Path
+- a sequence of edges that connects two vertices in a graph
+*** Simple Path
+- a path in which all vertices encountered along the path, except possibly the first and last ones, are /distinct/
+*** Cycle
+- a path in which the first and last vertex is the same
+*** Simple Cycle
+- a simple path in which the first and last vertex is the same
+*** Path Length
+- in an /unweighted/ graph, path length is the /number of edges/ that make up a path
+- in a /weighted/ graph, path length is the /sum of the weighting factors/ of the edges that make up a path
+*** Connected Vertices
+- two vertices are said to be connected if there is at least one path between them
+*** A Connected Graph
+- a graph is a connected graph if, given any two of its vertices, there is a pth between them
+*** A Complete Graph
+- a graph is said to be complete if the path length between any two distinct vertices is 1
+**** The Number of Edges in a Complete Graph
+- in an /undirected/ graph with /n/ vertices: =/n/(/n/ - 1) / 2=
+- in a /digragh/ with /n/ vertices: =/n/(/n/ - 1)=
+* Representing Graps
+** Representing Vertices
+- the set of vertices are often stored as an array of reference variables, each pointing to a vertex object
+  + the vertex object stores the information contained in the vertex
+- being array-based, the maximum number of vertices would have to be specified at the time the structure is created
+  + if it is impossible to accurately predict, the maximum number of vertices the graph will contain, or if the number of vertices in the graph will vary over time, the array can be expanded dynamically using the Java API =arraycopy= method
+- a linked list is sometimes more efficient to represent the vertices
+  + noncontiguous memory resentation of linked list-based structures always makes their Fetch and Delete operations slower than array-based structures
+** Reperesenting Edges
+- the edges of a graph are represented using two different schemes
+  1. adjacency matrix
+  2. adjacency list
+*** Adjacency Matrix
+- an adjacency matrix is a square matrix in which each element stores one edge of the graph
+  + the matrix is reprented in memory as a two-dimentional array consisting of /n/ rows and /n/ columns, where /n/ is the number of vertices in the graph
+- this scheme can be used when the vertices are represented using an array, but is not used when the vertices are represented using a linked list
+- the rows of the adjacency array are considered parallel to the vertex array in that all of the edges that /emenate from/ the vertex stored in element 0 of the vertex array are stored in row 0 of the adjacency array
+- the column numbers are the vertex numbers that the edges are /incident on/
+  + the element in row 3, column 5 of the adjacency array stores the information for the edge from vertex 3 to vertex 5
+- in an undirected graph, travel along the edges is bidirectional
+  + consequently, the adjacency matrix for an undirected graph is always symmetric, which can save some time in algorithms that process undirected graphs because only haof the array elements need to be fetched from memory
+- travel along the edges of a digraph is /not/ bidirectional, and the adjacency matrix of a directed graph is usually not symmetric
+  + the matrix of a digraph is symmetric only when there are two edges between pairs of vertices
+- the combination of a graph's vertex array and its adjacency matrix would be a complete representation of the graph
+*** Adjacency List
+- aside from the four basic operations (Insert, Fetch, Delete, and Update), a common operation performed on graphs is to determine which vertices are adjacent to a given vertex
+- although the algorithm is straightforward, it performs /n/ memory accesses for a graph with /n/ vertices
+- from a space complexity viewpoint, an adjacency matrix can be an inefficient way to represent a graph
+- an adjacency list is a set of /n/ linked lists, one list per vertex, which are considered parallel to the vertex array
+  + the first linked list stores the edges emanating from vertex 0, the second linked list stores edges emanating from vertex 1
+- each node on the linked list contains at least two pieces of information: vhe vertex number of the edge it is incident upon and the location of the next node in the linked list
+  + to determine which vertices are adjacent ot a given vertex, we traverse the vertexs linked list
+- since most graphs are far from complete, the adjacency list is usually the favored scheme
+  + when the vertices of a graph are represented using a singly linked list, the edges are always represented using an adjacency list
+* Operations Performed on Graphs
+- operations performed on graphs expand on the basic operation set performed on other structures
+  + this is becuase the not only do the nodes hold information but the edges do, as well
+- typical information held "in" the edges include which vertices they connect, which direction of travel is allowed, and the weighting factor of the edge
+- the ability to traverse a graph is so fundamental to many graph applications that it is usually considered to be a basic operation
+  + a typical set of fundamental operations provides the ability to operate on both vertices and edges, and to perform a traversal operation
+- for /vertex/ operations, the functionality of the Insert, Fetch, and Update operations is the same as that of other structures
+  + the Delete operation extends the functionality so that, when a vertex is deleted from a graph, the edges emenating from (and incident upon) it are also deleted
+    - edges /must/ connect two vertices
+- the operations for the /edges/ typically include an Insert operation (to add an edge between two existing vertices), a Delete operation (that eliminates an edge that connects two vertices), and a Fetch operation (that returns the edge's weighting factor)
+  + the Update operation is used to change the value of an edge's weighting factor
+- graphs can be access in the key field mode or in the node number mode
+  + in the case of a graph, the vertex number would be specified, and so this is referred to as the /vertex number/ mode
+* Implementing Graphs in the Vertex Number Mode
+- The implementation of a simple directed graph in the vertex number mode
+#+BEGIN_SRC java
+class SimpleGraph { //a directed graph, (digraph)
+    Listing vertex[]; //the reference to the vertex array
+    int edge[][]; //the reference to the adjacency matrix array
+    int mak, numberOfVertices;
+
+    public SimpleGraph(int n) {
+        vetex = new Listing[n]; //allocation of the vertex array
+        edge = new int[n][n]; //adjacency matrix initialized to zeros
+        max = n;
+        numberOfVertices = 0;
+    }
+
+    public boolean insertVertex(int vertexNumber, Listing nerListing) {
+        if(vertexNumber >= max) //the graph is full
+            return false;
+        vertex[vertexNumber] = newListing.deepCopy();
+        numberOfVertices++;
+        return true;
+    } //end insert method
+
+    public boolean insertEdge(int fromVertex, int toVertex) {
+        if(vertex[fromVertex] == null || vertex[toVertex] == null)
+            return null;
+        edge[fromVertex][toVertex] = 1;
+        return true;
+    } //end insertEdge method
+
+    public void showVertex(int vertexNumber) {
+        System.out.println(vertex[vertexNumber]);
+    } //end showVertex method
+
+    public void showEdges(int vertexNumber) { //emanating from vertexNumber
+        for(int colunm = 0; colunm < numberOfVertices; column++) {
+            if(edge[vertexNumber][column] == 1) //an edge found
+                System.out.println(vertexNumber = "," + column);
+        }
+    } //end showEdges method
+} //end of class SimpleGraph
+#+END_SRC
+* Traversing Graphs
+- in general, traversing a data structure is the process of performing a processing operation on each item in teh structure once and only once.
+  + once an operation hs been performed on an item, it is said to have been /visited/
+- an airline hub application that uses a =SimpleGraph= Object to store the hub cities and routes
+#+BEGIN_SRC java
+public class MainSimpleGraph {
+    public static void main(String[] args) {
+        SimpleGraph flyUS = new SimpleGraph(5);
+        Listing v0 = new Listing("Philadelphia");
+        Listing v1 = new Listing("New York");
+        Listing v2 = new Listing("Boston");
+        Listing v3 = new Listing("Los Angeles");
+        Listing v4 = new Listing("Houston");
+        //add the hub cities to the graph as vertices
+        flyUS.insertVertex(0, v0);
+        flyUS.insertVertex(1, v1);
+        flyUS.insertVertex(2, v2);
+        flyUS.insertVertex(3, v3);
+        flyUS.insertVertex(4, v4);
+        //add the woutes to the graph as edges
+        flyUS.insertEdge(0, 1);
+        flyUS.insertEdge(0, 3);
+        flyUS.insertEdge(1, 2);
+        flyUS.insertEdge(1, 3);
+        flyUS.insertEdge(2, 1);
+        flyUS.insertEdge(3, 4);
+        flyUS.insertEdge(4, 0);
+        flyUS.insertEdge(4, 3);
+        //output the hubs and the routes stored in the graph
+        for(int i = 0; i < 5; i++) {
+            System.out.print("hub " + i + "\'s ");
+            fly.US.showVertex(i);
+            System.out.println("its routes are: ");
+            flyUS.showEdges(i);
+        } //end the output loop
+    } //end of main method
+} //end class MainSimpleGraph
+#+END_SRC
+- the class =Listing= for the airline hub application
+#+BEGIN_SRC java
+//definition of a hub city (a vertex)
+public class Listing {
+    private String name;
+
+    public Listing(String n) {
+        name = n;
+    }
+
+    public String toString() {
+        return("Name is " + name);
+    }
+
+    public Listing deepCopy() {
+        Listing clone = new Listing(name);
+        return clone;
+    } //end of deepCopy method
+} //end class Listing
+#+END_SRC
+- the two most common traversal methods for graphs are the depth-first traversal (DFT) and the breadth-first traversal (BFT)
+  + in both of these traversals, any one of the graph's vertices can be designated to be visited first
+- in a DFT, for each vertex visited, all of its adjacent vertices (its /decendents/) are visited /before/ any of its /siblings/ are visited
+  + in the context of graph traversals, siblings are vretices that have an edge from a common vertex, assuming the common vertex was the vertex previously visited
+- in a BFT, all of the visited vertices' siblings are visited before any of its decendents are visited
+** Depth-First Traversal
+- the extension of the class =SimpleGraph= to include a Depth-First Traversal Operation
+#+BEGIN_SRC java
+import java.util.Stack;
+
+class SimpleGraphDFT { //adds a method DFT to the class
+    Listing2 vertex[]; //the reference to the vertex array
+    int edge[][]; //reference to the adjacency matrix array
+    int max, numberOfVertices;
+
+    public SimpleGraphDFT(int n) {
+        vertex = new Listing2[n]; //allocation of the vertex array
+        edge = new int[n][n]; //adjacency matrix with elements set to 0
+        max = n;
+        numberOfVertices = 0;
+    }
+
+    public void DFT(int firstVertex){
+        int v;
+        Stack<Integer> stack = new Stack(); //uses Java Stack class
+
+        //initializes all vertices to not visited
+        for(int i = 0; i < numberOfVertices; i++) {
+            if(vertex[i] != null)
+                vertex[i].setPushed(false); //mark all vertices unvisited
+        }
+        stack.push(firstVertex); //visit the first vertex
+        vertex[firstVertex].setPushed(true);
+
+        //visit all decedents
+        while(!stack.empty()) {
+            v = stack.pop();
+            vertex[v].visit(); //visit a vertex
+            for(int column = 0; column < numberOfVertices; column++) {
+                if(edge[v][column] == 1 && !vertex[column].getPushed()) {
+                    stack.push(column);
+                    vertex[column].setPushed(true);
+                } //end if
+            } //end for
+        } //end while
+    } //end DFT method
+
+    public boolean insertVertex(int vertexNumber, Listing2 newListing) {
+        if(vertexNumber >= max) //the graph is full
+            return false;
+        vertex[vertexNumber] = newListing.deepCopy();
+        numberOfVertices++;
+        return true;
+    }
+
+    public boolean insertEdge(int fromVertex, int toVertex) {
+        if(vertex[fromVertex] == null || vertex[toVertex] == null)
+            return false; //nonexistent vertex
+        edge[fromVertex][toVertex] = 1;
+        return true;
+    }
+
+    public void showVertex(int vertexNumber) {
+        System.out.println(vertex[vertexNumber]);
+    }
+
+    public void showEdges(int vertexNumber) { //edges from vertexNumber
+        for(int column = 0; column < numberOfVertices; column++) {
+            if(edge[vertexNumber][column] == 1) //there is an edge
+                System.out.println(vertexNumber + "," + column);
+        }
+    } //end showEdges method
+} //end class SimpleGraphDFT
+#+END_SRC
+- an expansion of the class =Listing= to include a data member and methods necessary to the DFT method of the class =SimpleGraphDFT=
+#+BEGIN_SRC java
+import javax.swing.JOptionPane;
+
+public class Listing2 {
+    private String name;
+    boolean pushed;
+
+    public Listing2(String n) {
+        name = n;
+    }
+
+    public String toString(); {
+        return ("Name is " + name);
+    } //end of toString method
+
+    public Listing2 deepCopy() {
+        Listing2 clone = new Listing2(name);
+        return clone;
+    } //end of the deepCopy method
+
+    public boolean getPushed() {
+        return pushed;
+    } //end of getPushed method
+
+    public void setPushed(boolean value) {
+        pushed = value;
+    } //end of setPushed method
+
+    public void visit() {
+        System.out.println(this);
+    } //end of visit method
+} //end class Listing2
+#+END_SRC
+** Breadth-First Traversal
+- in a breadth-first traversal, for each vertex visited all of its siblings are visited before any of its adjacent vertices (descendents) are visited
+  + in the context of graph traversals, siblings are vertices that have an edge from a common vertex, assuming the common vertex has just been visited
+- to ensure the correct order of visitation (siblings befor descendents) the descendents of the visited vertex must be placed on the to-be-visited list /after/ the siblings
+  + this is easily done if the list is a /queue/
+- a breadth-first traversal replaces the stack used in a depth-first traversal with a dueue
+  + othewise, the two algorithms are identical
+* Connectivity and Paths
+- to vertices in a graph are said to be connected if there is a way of reaching one from the other by traveling along the graph's edges
+  + the sequence of edges travelled along from one vertex to another is called a /path/
+- an undirected graph, and a dircted graph /whose edge directions are ignored/, is said to be /connected/ if, given any two vertices, there is a way of reaching one from the other by traveling along the graph's edges
+  + if a graph is not connected, it is said to be /disjoint/
+- a directed graph is said to be /strongly connected if/, considering the direction of its edges, and given any two vertices, there is a way of reaching one from the other by traveling along the graph's edges
+  + otherwise, it is said to be /weakly connected/
+- in an unweighted graph, the path /length/ is the number of edges that make up the path connecting two vertices
+- many interesting problems involve the consideration of connectivity and path (with examples in terms of building roads between towns in an isolated area):
+  + the connected undirected graph problem ("can any town be reached from any other town?")
+  + the strongly connected directed graph problem ("can every town be reached if some of the roads are changed to one way streets?")
+  + the spinning tree problem ("which roads can be closed for repair such that travelers will still be able to reach every town?")
+  + the minimum spanning tree problem ("which roads can be closed for repair such that every town can be reached and the total road mileage is minimized?")
+  + the shortest path problem ("what is the route that minimizes the mileage traveled between two towns?")
+  + the hamiltonian path problem ("is ther a route we can travel such that we pass through each town once but never visit a town twice?")
+  + the bridges of konigsberg problem ("are there routes that travel across all the roads just once, and is there one of these routes that will return to the starting point?")
+  + the traveling salesman problem ("what is the shortest route to visit all towns once and return back to the starting town?"), or
+  + "what is the route that minimizes the number of roads traveled"
+- the problems above are not only applicable to connecting towns but also to a variety of other problems in electronics, computer science, operations research, and many other fields
+** Connectivity of Directed Graphs
+- if a traversal is infitiated at /every/ vertex in a directed graph and each of these traversals visit every vertex in the graph, then the digraph is strongly connected
+- for a graph containing /n/ vertices, the speed of an algorithm that performs /n/ depth-first traversals is O(/n/^3) since the traversals algorithm is itself O(/n/^2)
+  + each of the /n/ traversals must be examined to determine if all /n/ vertices were visited, which is an O(/n/^2) operation
+*** Warshall's Alagorithm
+- presents an alternative method for determining if a directed graph is strongly connected
+  + if it is not, it affords a rapid way of determinig which vertices have paths connecting them
+- begins by copying the array that represents the graph's adjacency matrix into another array, =t=
+  + then, it modifies =t= by placing a 1 in the column =j= of row =i= if there is a path from vertex =i= to vertex =j=
+    - the path could be a single edge (which would already be represented in the adjacency matrix) or it could consist of a sequence of edges
+- the resulting modified version of the matrix =t= is called the /transitive closure/ or /reachability/ matrix
+- the basis of Warshall's Algorithm is the transitive property in mathematics
+- a method that determines the transitive closure matrix of a given matrix
+#+BEGIN_SRC java
+public class TransitiveClosure {
+    public static int[][] transitiveClosure(int n, int adjacency [][]) {
+        int t[][] = new int[n][n];
+        for(int col = 0; col < n; col++)
+            t[row][col] = adjacency[row][col];
+        //Warshall's Algorithm
+        for(int b = 0; b < n; b++) { //for each vertex, b
+            for(int c = 0; c < n; c++) {//locate the paths from vertex b to c
+                if(t[b][c] == 1) { //a path from vertex b to some vertex c found
+                    for(int a = 0; a < n; a++) { //find the paths to b
+                        if(t[a][b] == 1 && a != c) //a path to b from a found
+                            t[a][c] == 1; //mark path from vertex a to c
+                    } //end for
+                } //end if
+            } //end for
+        } //end for
+    return t;
+    } //end transitive Closure method
+} //end class TransitiveClosure
+#+END_SRC
+- the nested loops make the speed complexity of Washall's Algorithm no better than performing /n/ depth-first travals to determine if a directed graph is strongly connected
+  + however, it provides an additional piece of information: a prmanent record of all the possible path via the transitive closure matrix
+** Spanning Trees
+- a simple cycle is a simple path in a graph that begins and ends at the same vertex
+  + a tree is a connected graph that does not contain simple cycles
+- a graph's spanning tree is a tree that contains all of the vertices of the graph connected by a subset of the graph's edges
+  + the edges are chosen such that there is a path from each vertex to every other vertex
+    - since it is a tree, there are no cycles
+- most graphs have more than one spanning tree
+  + there is always one, and most often more than one, spanning tree for every connected undirected graph
+- since there are no cycles in a spanning tree, they always contain one less edge than the number of vertices in the graph
+  + thus, the spanning tree of an undirected connected graph is a subgraph that contains the minimum number of the graph's edges and still allows a path from any vertex to any other
+- to find a spanning tree of a connected undirected graph, use a depth-first traversal and record the edge between each nod visited and its descendents as the descendents are pushed onto the algorithm's stack
+  + since the vertices are only pushed onto the stack once, only one edge to each vertex will be recorded
+  + and, since all vertices vertices are pushed onto the stack, the edges will include an edge to each vertex, forming the edges of the spanning tree
+- alternatively, a breadth-first traversal could also be used and then the edge to each vertex can be recorded and added to the queue used by the BFT algorithm
+*** Minimum Spanning Trees
+- minimum spanning trees are spanning trees that consider an additional piece of information assiciated with the edges of a connected undirected graph, /edge weighting/
+- in the typical depiction of a weighted graph, the values of the weighting factors are shown along the graph's edges
+  + no attempt is made to make the relative length of the edges correspond to their relative weights
+- nonexistent edges are represented by an impossibly low or impossibly high value of the weighting factor depending on the application
+  + most programming languages provide a predefined constant that can be used (Java's =Integer.MIN_VALUE= and =Integer.MAX_VALUE=)
+- a /minimum/ spanning tree is the spanning tree whose edges are selected to minimize the sum of the weighting factors of the edges that make up the tree
+  + if there are no two edges in a weighted graph with the same weighting factor, then there is only one minimum spanning tree for the graph
+- to find a minimum spanning tree of a connected undirected graph, place a vertex 0 in the tree
+  + then, consider all the vertices currently in the tree (initially only vertex 0), and select the edge emenating from them with the minimum weight
+  + this is repeated until all the vertices are added
+    - any edge to a vertex already in the tree is not considered
+** Shortest Paths
+- the shortest path between two vertices is not always represented in the minimum spanning tree
+- Edsger Dijkstra discovered an algorithm in 1959 that determines the shortest path between any two vertices in a connected undirected graph or a corrected graph
+*** Dijkstra's Algorithm
+- very similar to the minimum spanning tree algorithm
+  + both begin by placing the starting vertex into the tree, consider all vertices currently in the tree, select an edge emanating from them base on a "consideration" of the edge weightings, and then add the selected edge and its incident vertex to the tree.
+- the algorithms differ in the consideration of the edge deightings used to determine which edge to add to the tree
+- to build a minimum spanning tree, the edges emanating from the vertices currently in the tree /with the minimum weighting/ is selected
+  + in the shortest path algorithm, the edge emanating from the vertices currently in the tree /that produces the shortest path length to the vertex it is incident upon/ is selected
+- Dijkstra's Shortest Path Algorithm pseudocode
+#+BEGIN_SRC java
+verticesIncluded[0] = startVertex; //add the starting vertex to the tree
+numVreticesIncluded = 1; //one vertex has been added to the tree
+
+for(int i = 0; i < numberOfVertices; i++) {//eliminate edges to the starting vertex
+    minPathLengths = noPath;
+    aCopy[i][startVertex]= noEdge;
+}
+
+minPathLengths[startVertex] = 0; //set its path length from the starting vertex to 0
+while(numVerticesIncluded < numberOfVertices) { //all vertices are not in the tree
+    findMinPath(numberOfVertices, aCopy, verticesIncluded, nuVerticesIncluded, minPathLengths, rowMin, colMin, minWeight, minPath);
+    for(int i = 0; i < numberOfVertices; i++) //eliminate edges to the included vertex
+        aCopy[i][molMin] = noEdge;
+    spt[rowMin][colMin] = minWeight; //add min. weighted edge to tree
+    spt[colMin][rowMin] = minWeight;
+    minPathLengths[colMin] = minPath; //add path length to list of min path lengths
+    verticesIncluded[numVerticesIncluded] = colMin; //add vertex to the included list
+    numVerticesIncluded++; //update the count of verties included in the tree
+} //end while
+return spt;
+#+END_SRC
+*** Floyd's Algorithm
+- also referred to as the Roy-Floyd Algorithm or the All-Pairs Shortest Algorithm
+- determines the shortest path between /all/ the pairs of vertices in a directed weighted graph
+- speed is equivalent to the speed of Dijskra's algorithm
+- does not determine the weight matrix that describes the edges involved in the shortest path
+  + but does treat every vertex as a strating vertex in one pass through the algorithm, making it useful for many applications
+- the basis of the algorithm is the idea is the idea that the shortest path length from vertex A to C is the shortest of the following two path lengths:
+  1. the path length from A to C;
+  2. the path length from A to B plus the path length from B to C, for /all B/
+  + in other words, it looks for an intermediate vertex, B, to travel through on its way to C, such that the sum of the path lengths from A to B and B to C is shorter than the path length from A to C.
+- Floyd's Algorithm to Find the All-Pairs Shortest Paths pseudocode
+#+BEGIN_SRC java
+for(int b = 0; b < numberOfVertices; b++) { //all vertices considered as intermediates, B
+    for(int a = 0; a < numberOfVertices; a++) { //all starting vertices, A
+        for(int c = 0; c < numberOfVertices; c++) { //all destination vertices, C
+            if(aCopy[a][c] > (aCopy[a][b] + aCopy[b][c])) //A to C > A to B to C
+                aCopy[a][c] = aCopy[a][b] + aCopy[b][c]; //store the indicated path length in the weight matrix
+        }
+    }
+}
+return aCopy;
+#+END_SRC
+- Floyd's Algorithm can be used to find the all-pairs shortest paths in an undirected or in a directed graph
+  + in a directed graph, it could be the case that a path does not exist between two vertices
+    - when a path does not exist between two vertices in a directed graph, Floyd's Algorithm leaves the impossibly hight value of the weighting factor in the shortest paths matrix

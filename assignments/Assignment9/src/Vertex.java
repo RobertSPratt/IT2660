@@ -3,7 +3,7 @@ public class Vertex {
     private boolean hasBeenVisited;
     private int value;
     private int numberOfEdges;
-    private Edge edge[];
+    private Edge[] edge;
 
     public Vertex(int num, int val, int edges) {
         this.vertexNumber = num;
@@ -40,13 +40,11 @@ public class Vertex {
     }
 
     public boolean canAddEdge() {
-        if(numberOfEdges >= edge.length)
-            return false;
-        return true;
+        return(numberOfEdges < edge.length);
     }
 
     public boolean addEdge(Edge e) {
-        if(numberOfEdges >= edge.length)
+        if(!canAddEdge())
             return false;
         else {
             edge[numberOfEdges] = e;

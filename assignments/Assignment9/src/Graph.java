@@ -1,9 +1,8 @@
 import java.util.*;
-import java.lang.Math;
 
 public class Graph {
-    Vertex vertex[];
-    int edge[][];
+    Vertex[] vertex;
+    int[][] edge;
     int max, numberOfVertices;
 
     public Graph(int n) {
@@ -48,7 +47,7 @@ public class Graph {
         int v = 0;
         int numOfVerticesVisited = 0;
         int shortestPathLength = 0;
-        int prevVertex[] = new int[edge.length];
+        int[] prevVertex = new int[edge.length];
         boolean wasFound = false;
         Queue queue = new LinkedList<Integer>();
 
@@ -87,19 +86,25 @@ public class Graph {
                 "\nWas successful: " + wasFound +
                 "\nLength of the shortest path (edges traversed): " + shortestPathLength +
                 "\nTotal number of vertices visited: " + numOfVerticesVisited);
+
+        if(!wasFound)
+            for(int i = 0; i < vertex.length; i++)
+                if(!vertex[i].checkVisited())
+                    System.out.println("Vertex " + i + " was not visited, value: " + vertex[i].getValue());
     }
 
     public void depthFirstTraversal(int targetValue) {
         int v = 0;
         int numOfVerticesVisited = 0;
         int shortestPathLength = 0;
-        int prevVertex[] = new int[edge.length];
+        int[] prevVertex = new int[edge.length];
         boolean wasFound = false;
         Stack<Integer> stack = new Stack();
 
         for(int i = 0; i < numberOfVertices; i++) {
-            if(vertex[i] != null)
+            if(vertex[i] != null) {
                 vertex[i].setVisited(false);
+            }
         }
         stack.push(v);
         vertex[v].setVisited(true);
@@ -132,6 +137,11 @@ public class Graph {
                 "\nWas successful: " + wasFound +
                 "\nLength of the shortest path (edges traversed): " + shortestPathLength +
                 "\nTotal number of vertices visited: " + numOfVerticesVisited);
+
+        if(!wasFound)
+                for(int i = 0; i < vertex.length; i++)
+                    if(!vertex[i].checkVisited())
+                        System.out.println("Vertex " + i + " was not visited, value: " + vertex[i].getValue());
     }
 
     public void dijkstraAlgorithm(int targetValue) {
@@ -140,8 +150,8 @@ public class Graph {
         boolean wasFound = false;
         int curVertex = 0;
         int curWeight = 0;
-        int prevVertex [] = new int[edge.length]; //previous vertex along shortest path
-        int numOfVerticesVisited = 0; //total number of vertices visited during search
+        int[] prevVertex = new int[edge.length]; //previous vertex along shortest path
+        int numOfVerticesVisited = -1; //number of vertices visited during search minus starting one950
 
         for(int i = 0; i < numberOfVertices; i++) {
             if(vertex[i] != null)
@@ -149,16 +159,6 @@ public class Graph {
         }
 
         prevVertex[0] = -1; //set impossible value to designate start of path
-
-        //create an edge object for every edge
-        for(int i = 0; i < numOfEdges; i++) {
-            for(int j = 0; j < numOfEdges; j++) {
-                if(edge[i][j] == 1) {
-                    vertex[i].addEdge(new Edge(i, j,
-                            Math.abs(vertex[j].getValue() - vertex[i].getValue())));
-                }
-            }
-        }
 
         for(int i = 0; i < vertex[curVertex].getEdges().length; i++) {
             for(int j = 0; j < vertex[curVertex].getEdges().length; j++)
@@ -188,14 +188,19 @@ public class Graph {
                 pathOptions.add(vertex[curVertex].getEdge(i));
             }
 
-            //mark the currentVertex as visited and add it to count
+            //mark the currentVertex as visited
             vertex[curVertex].setVisited(true);
             numOfVerticesVisited++;
         }
 
         System.out.println("Dijkstra's Algorithm" +
-                "\nWas succesful: " + wasFound +
+                "\nWas successful: " + wasFound +
                 "\nLength of the shortest path (sum of path weights): " + curWeight +
                 "\nTotal number of vertices visited: " + numOfVerticesVisited);
+
+        if(!wasFound)
+            for(int i = 0; i < vertex.length; i++)
+                if(!vertex[i].checkVisited())
+                    System.out.println("Vertex " + i + " was not visited, value: " + vertex[i].getValue());
     }
 }
